@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   1. LUXURY BRIGHT MODE VARIABLES 
+   ========================================================= */
+:root {
+  --bg-color: #f9f9fb; 
+  --text-color: #111827; 
+  --primary: #d4af37;
+  --glass-bg: rgba(255, 255, 255, 0.85); 
+  --glass-border: rgba(0, 0, 0, 0.08); 
+  --scrollbar-track: #f1f5f9;
+  --muted-text: #4b5563; 
+  --input-bg: #ffffff; 
+}
+
+/* =========================================================
+   2. PERFECT DARK MODE VARIABLES (Untouched)
+   ========================================================= */
+.dark-mode {
+  --bg-color: #050505;
+  --text-color: #ffffff;
+  --primary: #d4af37;
+  --glass-bg: rgba(20, 20, 20, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --scrollbar-track: #050505;
+  --muted-text: #9ca3af;
+  --input-bg: rgba(0, 0, 0, 0.5);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body, #root { 
+  background-color: var(--bg-color) !important; 
+  color: var(--text-color) !important; 
+  font-family: 'Inter', sans-serif; 
+  overflow-x: hidden; 
+  -webkit-font-smoothing: antialiased; 
+  transition: background-color 0.6s ease, color 0.6s ease; 
+  min-height: 100vh;
+}
+
+/* =========================================================
+   3. MAGIC AUTO-CONVERSION (FINAL PATCH)
+   ========================================================= */
+
+/* A. ANNIHILATE STUBBORN DARK BACKGROUNDS (EXCEPT NAV & HERO) */
+:root:not(.dark-mode) main,
+:root:not(.dark-mode) footer,
+:root:not(.dark-mode) .bg-black,
+:root:not(.dark-mode) .bg-dark-bg,
+:root:not(.dark-mode) [class*="bg-[#0"], 
+:root:not(.dark-mode) [class*="bg-[#1"],
+:root:not(.dark-mode) [class*="bg-gray-8"],
+:root:not(.dark-mode) [class*="bg-gray-9"] {
+  background-color: var(--bg-color) !important;
+}
+
+/* 🚨 THE PROTECTOR: FORCE NAVBAR & HERO TO STAY BLACK FOREVER 🚨 */
+:root:not(.dark-mode) nav,
+:root:not(.dark-mode) section.h-screen,
+:root:not(.dark-mode) .bg-\[\#0a0a0a\]\/90,
+:root:not(.dark-mode) .bg-\[\#0a0a0a\]\/95 {
+  background-color: #050505 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* B. FIX TEXT COLORS */
+:root:not(.dark-mode) .text-white,
+:root:not(.dark-mode) .text-gray-300 {
+  color: var(--text-color) !important;
+}
+
+/* 🚨 PROTECT NAVBAR & HERO TEXT (Keep them White) 🚨 */
+:root:not(.dark-mode) nav .text-white,
+:root:not(.dark-mode) nav .text-gray-300,
+:root:not(.dark-mode) nav a,
+:root:not(.dark-mode) section.h-screen .text-white,
+:root:not(.dark-mode) section.h-screen h1,
+:root:not(.dark-mode) section.h-screen p,
+:root:not(.dark-mode) section.h-screen span {
+  color: #ffffff !important;
+}
+
+/* Fix Muted Text and Footer Readability */
+:root:not(.dark-mode) .text-gray-400,
+:root:not(.dark-mode) .text-gray-500 {
+  color: var(--muted-text) !important;
+}
+:root:not(.dark-mode) footer a,
+:root:not(.dark-mode) footer p,
+:root:not(.dark-mode) footer span,
+:root:not(.dark-mode) footer h1,
+:root:not(.dark-mode) footer h2,
+:root:not(.dark-mode) footer h3,
+:root:not(.dark-mode) footer h4,
+:root:not(.dark-mode) footer svg {
+  color: var(--text-color) !important;
+}
+
+/* C. FIX REVENUE TABLE & STATUS BADGES */
+:root:not(.dark-mode) tr:hover,
+:root:not(.dark-mode) tr:hover td,
+:root:not(.dark-mode) tr:hover p,
+:root:not(.dark-mode) tr:hover span {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    color: var(--text-color) !important;
+}
+:root:not(.dark-mode) .bg-yellow-400\/20 {
+    background-color: rgba(212, 175, 55, 0.2) !important;
+    color: #856404 !important;
+}
+:root:not(.dark-mode) .bg-blue-500\/10 {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+    color: #1e40af !important;
+}
+
+/* D. CONTACT PAGE FORM FIXES */
+:root:not(.dark-mode) input,
+:root:not(.dark-mode) textarea {
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+:root:not(.dark-mode) input::placeholder,
+:root:not(.dark-mode) textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Fix Gold Button Hover in Light Mode */
+:root:not(.dark-mode) [class*="hover:bg-white"]:hover {
+  background-color: #111827 !important;
+  color: #ffffff !important;
+}
+
+/* E. BORDERS & SECONDARY BACKGROUNDS */
+:root:not(.dark-mode) .border-white\/10,
+:root:not(.dark-mode) .border-white\/20,
+:root:not(.dark-mode) .border-white\/5 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+:root:not(.dark-mode) .bg-white\/5,
+:root:not(.dark-mode) .bg-white\/\[0\.02\] {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+/* =========================================================
+   4. PREMIUM GLASS CLASSES 
+   ========================================================= */
+.liquid-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05); 
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease; 
+}
+.dark-mode .liquid-glass {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+.liquid-glass:hover {
+  box-shadow: 0 20px 50px rgba(212, 175, 55, 0.15) !important;
+  border-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+/* =========================================================
+   5. IMAGE SIZE CONSTRAINTS
+   ========================================================= */
+.product-img-box {
+  height: 280px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.product-img-box img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15)); 
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease; 
+}
+.dark-mode .product-img-box img {
+  filter: drop-shadow(0 15px 30px rgba(0,0,0,0.8));
+}
+
+/* =========================================================
+   6. CUSTOM CSS ANIMATIONS
+   ========================================================= */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* =========================================================
+   7. SCROLLBAR & SELECTION
+   ========================================================= */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { 
+  background: var(--scrollbar-track); 
+  transition: background 0.5s ease; 
+}
+::-webkit-scrollbar-thumb { 
+  background: var(--primary); 
+  border-radius: 10px; 
+}
+::selection {
+  background: rgba(212, 175, 55, 0.4);
+  color: var(--text-color);
+}

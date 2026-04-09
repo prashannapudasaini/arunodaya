@@ -1,0 +1,4 @@
+<IfModule mod_headers.c>
+    # CORS headers removed from here. 
+    # PHP files (auth.php, products.php) are now handling this exclusively to prevent the 'multiple values' crash.
+</IfModule>
