@@ -32,10 +32,8 @@ export default function FeaturedProducts() {
   if (products.length === 0) return null;
 
   return (
-    /* Updated: grid-cols-1 for mobile, md:grid-cols-2 for tablets, lg:grid-cols-3 for desktop.
-       Added gap-16 and lg:gap-20 to provide room for taller ProductCards.
-    */
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 lg:gap-20 max-w-7xl mx-auto">
+    /* Updated gap to fit the new Glassmorphism Cards perfectly */
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 max-w-7xl mx-auto">
       {products.map(p => (
         <ProductCard key={p.id} product={p} isUpcoming={false} />
       ))}

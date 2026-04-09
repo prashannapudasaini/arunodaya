@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // 1. Added import for routing
 import axios from 'axios';
 import API_BASE_URL from '../config';
 
 export default function Upcoming() {
   const [upcomingProducts, setUpcomingProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation(); // 2. Read the URL hash
 
   useEffect(() => {
     // Fetch products specifically marked as 'upcoming'
@@ -20,6 +22,19 @@ export default function Upcoming() {
         setLoading(false);
       });
   }, []);
+
+  // 3. Auto-Scroll Logic
+  useEffect(() => {
+    if (!loading && location.hash) {
+      const targetId = location.hash.replace('#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 150);
+      }
+    }
+  }, [loading, location.hash]);
 
   if (loading) {
     return (
@@ -57,9 +72,11 @@ export default function Upcoming() {
               const imgPath = `${API_BASE_URL.replace('/api', '')}/${p.image}`;
 
               return (
+                // 4. Attached id={`product-${p.id}`} and scroll-mt-32
                 <div 
                   key={p.id} 
-                  className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 lg:gap-24`}
+                  id={`product-${p.id}`}
+                  className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 lg:gap-24 scroll-mt-32`}
                 >
                   {/* Image Side - Muted/Grayscale for Upcoming */}
                   <div className="w-full md:w-1/2 flex justify-center">

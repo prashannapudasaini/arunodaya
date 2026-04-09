@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // 1. Added import for routing
 import axios from 'axios';
 import API_BASE_URL from '../config';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation(); // 2. Read the URL hash
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/products.php`).then(res => {
@@ -13,6 +15,19 @@ export default function Products() {
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
+
+  // 3. Auto-Scroll Logic: Waits for loading to finish, then smoothly scrolls
+  useEffect(() => {
+    if (!loading && location.hash) {
+      const targetId = location.hash.replace('#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 150);
+      }
+    }
+  }, [loading, location.hash]);
 
   if (loading) return <div className="min-h-screen bg-black flex items-center justify-center text-brand-gold animate-pulse uppercase tracking-[0.5em] text-xs">Accessing Reserves...</div>;
 
@@ -23,7 +38,12 @@ export default function Products() {
           const isEven = index % 2 === 0;
           const imgPath = `${API_BASE_URL.replace('/api','')}/${p.image}`;
           return (
-            <div key={p.id} className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 lg:gap-24 animate-in fade-in slide-in-from-bottom-10 duration-1000`}>
+            // 4. Attached id={`product-${p.id}`} and scroll-mt-32 to align perfectly below navbar
+            <div 
+              key={p.id} 
+              id={`product-${p.id}`} 
+              className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 lg:gap-24 animate-in fade-in slide-in-from-bottom-10 duration-1000 scroll-mt-32`}
+            >
               <div className="w-full md:w-1/2 flex justify-center relative">
                 <div className="absolute inset-0 bg-brand-gold/10 blur-[120px] rounded-full"></div>
                 <img 

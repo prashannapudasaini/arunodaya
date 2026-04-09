@@ -4,9 +4,9 @@ import { ChevronRight } from 'lucide-react';
 
 const Hero = () => {
   const slides = [
-    { title: "Pure Heritage", sub: "THE SPIRIT OF THE HIMALAYAS" },
-    { title: "Master Distilled", sub: "AGED TO PERFECTION" },
-    { title: "Modern Luxury", sub: "CRAFTED FOR CONNOISSEURS" }
+    { title: "Pure Heritage", sub: "THE SPIRIT OF THE HIMALAYAS", img: '/images/hero_1.jpg' },
+    { title: "Master Distilled", sub: "AGED TO PERFECTION", img: '/images/hero_2.jpg' },
+    { title: "Modern Luxury", sub: "CRAFTED FOR CONNOISSEURS", img: '/images/hero_3.png' }
   ];
   
   const [current, setCurrent] = useState(0);
@@ -17,9 +17,24 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
+    // Changed to h-[100svh] to ensure it fits mobile screens perfectly without UI cut-offs
+    <section className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-black">
+      
+      {/* Animated Background Images */}
+      {slides.map((slide, index) => (
+        <img 
+          key={index} 
+          src={slide.img} 
+          alt={slide.title} 
+          className={`absolute inset-0 w-full h-full transition-all duration-1000 object-cover object-center ${
+            index === current ? 'opacity-60 scale-100' : 'opacity-0 scale-105'
+          }`} 
+          onError={(e) => { e.target.style.display = 'none'; }} 
+        />
+      ))}
+
       {/* Background Overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-dark-bg z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-[#050505] z-10" />
       
       {/* Animated Text Content */}
       <div className="z-20 text-center px-6">
@@ -40,7 +55,7 @@ const Hero = () => {
             <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
           </Link>
           
-          <Link to="/about" className="px-10 py-4 border border-white/20 hover:border-brand-gold transition-colors tracking-widest text-sm">
+          <Link to="/about" className="px-10 py-4 border border-white/20 hover:border-brand-gold transition-colors tracking-widest text-sm text-white">
             OUR STORY
           </Link>
         </div>
