@@ -25,7 +25,11 @@ export default function UpcomingPreview() {
 
   return (
     <section className="py-24 px-6 bg-black">
-      <div className="max-w-7xl mx-auto glass-panel rounded-[40px] overflow-hidden flex flex-col md:flex-row items-center border border-white/5 bg-gradient-to-br from-white/[0.03] to-transparent shadow-2xl relative">
+      {/* Main Container: Maintain rounded-[40px] and border logic 
+          Added min-h-[600px] to match the taller card aesthetic.
+      */}
+      <div className="max-w-7xl mx-auto glass-panel rounded-[40px] overflow-hidden flex flex-col md:flex-row items-center border border-white/5 bg-gradient-to-br from-white/[0.03] to-transparent shadow-2xl relative min-h-[650px]">
+        
         <div className="md:w-1/2 p-12 lg:p-20 space-y-8 relative z-10">
           <div className="flex items-center gap-3 text-brand-gold uppercase tracking-[0.3em] text-[10px] font-black">
             <Calendar size={14} /> Innovation Reserve
@@ -39,14 +43,23 @@ export default function UpcomingPreview() {
             <p className="text-white font-serif text-2xl italic">{upcoming.flavor_notes || "Complex & Smooth"}</p>
           </div>
         </div>
-        <div className="md:w-1/2 bg-white/[0.02] flex justify-center items-center p-20 min-h-[500px] relative">
-          <div className="absolute inset-0 bg-brand-gold/5 blur-[100px] rounded-full opacity-30"></div>
+
+        {/* Right side image: 
+            Increased min-h to [600px] to allow the PNG bottle to sit tall.
+        */}
+        <div className="md:w-1/2 bg-white/[0.01] flex justify-center items-end p-12 lg:p-20 min-h-[600px] relative">
+          <div className="absolute inset-0 bg-brand-gold/5 blur-[120px] rounded-full opacity-30"></div>
+          
           <img 
             src={imgPath} 
             alt="Upcoming" 
             loading="lazy"
-            className="relative z-10 max-h-[500px] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-1000 scale-95 hover:scale-100" 
+            /* Updated max-h-[600px] and drop-shadow for consistency with the tall ProductCards.
+               Aligned to 'end' so the bottle sits on the invisible floor.
+            */
+            className="relative z-10 max-h-[600px] object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-1000 scale-95 hover:scale-105 drop-shadow-[0_30px_50px_rgba(0,0,0,0.5)]" 
             onLoad={(e) => { e.target.style.opacity = 0.4; }}
+            onError={(e) => { e.target.style.display = 'none'; }}
           />
         </div>
       </div>

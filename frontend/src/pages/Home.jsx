@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { API_BASE_URL, getImageUrl } from '../config';
 import { MapPin, Mail, Phone, ArrowRight, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; 
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 // Explicitly importing the hero images
 import hero1 from '../assets/images/hero_1.jpg';
@@ -21,6 +22,37 @@ export default function Home() {
     { img: hero3, title: "HIMALAYAN LEGACY", subtitle: "Aged to Perfection" }
   ];
 
+  // DATA FOR THE 3 DYNAMIC SECTIONS
+  const showcaseStages = [
+    {
+      id: "mr-black",
+      bg: "/images/back2.png",         // Glass on Left
+      product: "/images/mr_black.png", // Branding on Right
+      title: "Iconic Balance",
+      subtitle: "The Gold Standard",
+      desc: "Mr. Black Extra Strong is more than a spirit; it is a legacy of Himalayan intensity refined into smooth perfection.",
+      side: "right" 
+    },
+    {
+      id: "bare-shine",
+      bg: "/images/back3.png",         // Glass on Right
+      product: "/images/bare_shine.png", // Branding on Left
+      title: "Crystal Purity",
+      subtitle: "The Bare Shine Reserve",
+      desc: "Experience the extra dry, clean finish of our premium Bare Shine vodka, distilled for those who seek uncompromised clarity.",
+      side: "left"
+    },
+    {
+      id: "makhan",
+      bg: "/images/back4.png",         // Glass on Left
+      product: "/images/makhan.png",   // Branding on Right
+      title: "Premium Apple",
+      subtitle: "Himalayan Harvest",
+      desc: "Our Makhan series brings the crisp sweetness of Himalayan apples together with a bold, smooth distillation profile.",
+      side: "right"
+    }
+  ];
+
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -30,7 +62,6 @@ export default function Home() {
     axios.get(`${API_BASE_URL}/admin/products.php?featured=1`)
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : (res.data.data || []);
-        // Updated to fetch 4 or 8 items to match the balanced grid look of the reference image
         setFeaturedProducts(data.slice(0, 8)); 
       })
       .catch(err => console.error("Error fetching featured:", err));
@@ -69,7 +100,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= FEATURED PRODUCTS (MINIMALIST REDESIGN) ================= */}
+      {/* ================= FEATURED PRODUCTS ================= */}
       <section className="py-24 max-w-[1400px] mx-auto px-6">
         <div className="text-center mb-20">
           <span className="text-gray-400 text-[10px] font-black tracking-[0.4em] uppercase">Signature</span>
@@ -77,7 +108,6 @@ export default function Home() {
           <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-6"></div>
         </div>
 
-        {/* Changed to a 4-column grid to match the reference image style */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {featuredProducts.length > 0 ? featuredProducts.map((p) => (
             <div 
@@ -85,9 +115,7 @@ export default function Home() {
               onClick={() => navigate('/products', { state: { selectedProduct: p } })} 
               className="flex flex-col items-center text-center group cursor-pointer"
             >
-              {/* Image Container: Taller height, no background box, floating effect */}
               <div className="relative h-[380px] w-full flex justify-center items-end mb-8">
-                {/* Subtle back-glow on hover */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-brand-gold/0 blur-[60px] rounded-full group-hover:bg-brand-gold/10 transition-all duration-700"></div>
                 
                 <img 
@@ -98,7 +126,6 @@ export default function Home() {
                 />
               </div>
 
-              {/* Typography & Button styling matching the reference */}
               <span className="text-gray-400 text-[11px] font-light tracking-[0.2em] uppercase mb-3">
                 {p.category}
               </span>
@@ -117,8 +144,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= UPCOMING RELEASES (MINIMALIST REDESIGN) ================= */}
-      {/* Applied the same elegant styling to upcoming products, but with a grayscale effect */}
+      {/* ================= UPCOMING RELEASES ================= */}
       <section className="py-24 bg-white/[0.02] border-y border-white/5">
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="text-center mb-20">
@@ -164,11 +190,16 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ================= 3-STAGE DYNAMIC BRANDING SHOWCASE ================= */}
+      <section className="relative">
+        {showcaseStages.map((stage) => (
+          <ShowcaseStage key={stage.id} stage={stage} navigate={navigate} />
+        ))}
+      </section>
 
       {/* ================= CONTACT & MAP SECTION ================= */}
       <section className="py-24 max-w-[1400px] mx-auto px-6 lg:px-20">
         <div className="grid lg:grid-cols-2 gap-16">
-          
           <div className="space-y-10 flex flex-col justify-center">
             <div>
               <span className="text-brand-gold text-[10px] font-black tracking-[0.4em] uppercase block mb-4">Direct Line</span>
@@ -202,7 +233,7 @@ export default function Home() {
 
             <div className="overflow-hidden h-[300px] border border-white/10 mt-6 shadow-2xl rounded-sm">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2172.9675294794256!2d84.8060845092122!3d27.058449611905488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3993570026312449%3A0x8e6e98cc027979bf!2zQXJ1bm9kYXlhIERpc3RpbGxhcnkg4KSF4KSw4KWB4KSj4KWL4KSm4KSvIOCkoeCkv-CkuOCljeCkn-Ckv-CksOClgA!5e0!3m2!1sen!2snp!4v1775110099069!5m2!1sen!2snp"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3550.0!2d84.9!3d27.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDEyJzAwLjAiTiA4NMKwNTQnMDAuMCJF!5e0!3m2!1sen!2snp!4v1"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -233,7 +264,7 @@ export default function Home() {
                   setTimeout(() => {
                     submitBtn.textContent = 'Send Inquiry';
                     submitBtn.style.backgroundColor = ''; 
-                    submitBtn.disabled = false;
+                    submitBtn.style.disabled = false;
                   }, 3000);
                 } else {
                   submitBtn.textContent = 'Error. Try Again.';
@@ -255,5 +286,89 @@ export default function Home() {
         </div>
       </section>
     </main>
+  );
+}
+
+// ================= SHOWCASE SUB-COMPONENT (SCROLL ANIMATION) =================
+function ShowcaseStage({ stage, navigate }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+
+  // Animations: Fades and horizontal sliding
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.05, 1, 1.05]);
+  const productX = useTransform(
+    scrollYProgress, 
+    [0, 0.4, 0.6, 1], 
+    [stage.side === 'right' ? 80 : -80, 0, 0, stage.side === 'right' ? 80 : -80]
+  );
+
+  return (
+    <div ref={ref} className="h-[120vh] relative">
+      <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">
+        
+        {/* Parallax Background */}
+        <motion.div 
+          style={{ opacity, scale, backgroundImage: `url(${stage.bg})` }} 
+          className="absolute inset-0 bg-cover bg-center z-0 bg-fixed"
+        >
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px]"></div>
+        </motion.div>
+
+        <div className="relative z-10 max-w-[1400px] mx-auto px-6 w-full">
+          <div className="grid lg:grid-cols-3 items-center gap-12">
+            
+            {/* Left Side (Branding if side is 'left', otherwise empty spacer) */}
+            <div className={`flex justify-center ${stage.side === 'right' ? 'lg:order-last' : 'lg:order-first'}`}>
+              {stage.side === 'left' ? (
+                <motion.img 
+                  style={{ x: productX, opacity }} 
+                  src={stage.product} 
+                  className="max-h-[600px] object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.9)]" 
+                />
+              ) : <div className="hidden lg:block"></div>}
+            </div>
+
+            {/* Middle Content */}
+            <motion.div style={{ opacity }} className="text-center space-y-8">
+              <div className="space-y-4">
+                <span className="text-brand-gold text-[10px] font-black tracking-[0.5em] uppercase block">
+                  {stage.subtitle}
+                </span>
+                <h2 className="text-5xl md:text-7xl font-serif text-white uppercase leading-tight">
+                  {stage.title.split(' ')[0]} <br/> 
+                  <span className="italic text-brand-gold">{stage.title.split(' ')[1]}</span>
+                </h2>
+              </div>
+              <div className="w-16 h-[1px] bg-brand-gold mx-auto"></div>
+              <p className="text-gray-100 text-xl font-light leading-relaxed max-w-md mx-auto drop-shadow-lg">
+                {stage.desc}
+              </p>
+              <button 
+                onClick={() => navigate('/about')} 
+                className="bg-brand-gold text-black px-12 py-5 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white transition-all shadow-2xl"
+              >
+                Learn More
+              </button>
+            </motion.div>
+
+            {/* Right Side (Branding if side is 'right', otherwise empty spacer) */}
+            <div className={`flex justify-center ${stage.side === 'left' ? 'lg:order-first' : 'lg:order-last'}`}>
+              {stage.side === 'right' ? (
+                <motion.img 
+                  style={{ x: productX, opacity }} 
+                  src={stage.product} 
+                  className="max-h-[600px] object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.9)]" 
+                />
+              ) : <div className="hidden lg:block"></div>}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
