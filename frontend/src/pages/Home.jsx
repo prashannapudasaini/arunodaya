@@ -164,52 +164,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= THE MASTER'S RESERVE (Collection Shelf) ================= */}
-      <section className="relative w-full overflow-hidden bg-black py-24 md:py-32">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/all.png" 
-            alt="Arunodaya Distillery Collection" 
-            className="w-full h-full object-cover opacity-60 scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-[#050505]"></div>
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-20 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
-            <div className="flex items-center gap-3">
-              <span className="w-12 h-[1px] bg-brand-gold"></span>
-              <span className="text-brand-gold text-[10px] font-black tracking-[0.4em] uppercase">The Art of Distillation</span>
-            </div>
-            
-            <h2 className="text-5xl md:text-7xl font-serif text-white leading-tight uppercase">
-              A LEGACY <br /> 
-              <span className="text-brand-gold italic">IN EVERY DROP</span>
-            </h2>
-            
-            <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed max-w-xl">
-              At Arunodaya, we don't just bottle spirits; we curate experiences. Our master blenders 
-              harness Himalayan spring water and heritage grains to create a portfolio 
-              ranging from the bold 555 Vodka to the smooth, rich Bare Shine.
-            </p>
-
-            <div className="flex flex-wrap gap-6 pt-6">
-              <button 
-                onClick={() => navigate('/products')}
-                className="bg-brand-gold text-black px-10 py-4 font-black text-xs uppercase tracking-widest hover:bg-white transition-all duration-300 shadow-2xl"
-              >
-                View Full Cellar
-              </button>
-              <button 
-                onClick={() => navigate('/about')}
-                className="border border-white/30 text-white px-10 py-4 font-black text-xs uppercase tracking-widest hover:border-brand-gold transition-all duration-300"
-              >
-                Our Heritage
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ================= CONTACT & MAP SECTION ================= */}
       <section className="py-24 max-w-[1400px] mx-auto px-6 lg:px-20">
