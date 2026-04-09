@@ -26,8 +26,8 @@ export default function Home() {
   const showcaseStages = [
     {
       id: "mr-black",
-      bg: "/images/back2.png",         // Glass on Left
-      product: "/images/mr_black.png", // Branding on Right
+      bg: "/images/back2.png",         
+      product: "/images/mr_black.png", 
       title: "Iconic Balance",
       subtitle: "The Gold Standard",
       desc: "Mr. Black Extra Strong is more than a spirit; it is a legacy of Himalayan intensity refined into smooth perfection.",
@@ -35,8 +35,8 @@ export default function Home() {
     },
     {
       id: "bare-shine",
-      bg: "/images/back3.png",         // Glass on Right
-      product: "/images/bare_shine.png", // Branding on Left
+      bg: "/images/back3.png",         
+      product: "/images/bare_shine.png", 
       title: "Crystal Purity",
       subtitle: "The Bare Shine Reserve",
       desc: "Experience the extra dry, clean finish of our premium Bare Shine vodka, distilled for those who seek uncompromised clarity.",
@@ -44,8 +44,8 @@ export default function Home() {
     },
     {
       id: "makhan",
-      bg: "/images/back4.png",         // Glass on Left
-      product: "/images/makhan.png",   // Branding on Right
+      bg: "/images/back4.png",         
+      product: "/images/makhan.png",   
       title: "Premium Apple",
       subtitle: "Himalayan Harvest",
       desc: "Our Makhan series brings the crisp sweetness of Himalayan apples together with a bold, smooth distillation profile.",
@@ -233,7 +233,7 @@ export default function Home() {
 
             <div className="overflow-hidden h-[300px] border border-white/10 mt-6 shadow-2xl rounded-sm">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3550.0!2d84.9!3d27.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDEyJzAwLjAiTiA4NMKwNTQnMDAuMCJF!5e0!3m2!1sen!2snp!4v1"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2172.9675294794256!2d84.8060845092122!3d27.058449611905488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3993570026312449%3A0x8e6e98cc027979bf!2zQXJ1bm9kYXlhIERpc3RpbGxhcnkg4KSF4KSw4KWB4KSj4KWL4KSm4KSvIOCkoeCkv-CkuOCljeCkn-Ckv-CksOClgA!5e0!3m2!1sen!2snp!4v1775110099069!5m2!1sen!2snp"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -289,7 +289,7 @@ export default function Home() {
   );
 }
 
-// ================= SHOWCASE SUB-COMPONENT (SCROLL ANIMATION) =================
+// ================= MOBILE-OPTIMIZED SHOWCASE COMPONENT =================
 function ShowcaseStage({ stage, navigate }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -297,54 +297,85 @@ function ShowcaseStage({ stage, navigate }) {
     offset: ["start end", "end start"]
   });
 
-  // Animations: Fades and horizontal sliding
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.05, 1, 1.05]);
-  const productX = useTransform(
-    scrollYProgress, 
-    [0, 0.4, 0.6, 1], 
-    [stage.side === 'right' ? 80 : -80, 0, 0, stage.side === 'right' ? 80 : -80]
-  );
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1, 1.1]);
+  
+  // Gentle vertical float animation (prevents annoying side-scrolling on mobile)
+  const imageY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [40, 0, 0, -40]);
 
   return (
     <div ref={ref} className="h-[120vh] relative">
       <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">
         
-        {/* Parallax Background */}
+        {/* Parallax Background - Fixed on desktop only to fix iOS mobile jumping */}
         <motion.div 
           style={{ opacity, scale, backgroundImage: `url(${stage.bg})` }} 
-          className="absolute inset-0 bg-cover bg-center z-0 bg-fixed"
+          className="absolute inset-0 bg-cover bg-center lg:bg-fixed z-0"
         >
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px]"></div>
+          {/* Darker overlay on mobile for perfect text readability */}
+          <div className="absolute inset-0 bg-black/70 lg:bg-black/50 backdrop-blur-[2px] lg:backdrop-blur-[1px]"></div>
         </motion.div>
 
-        <div className="relative z-10 max-w-[1400px] mx-auto px-6 w-full">
-          <div className="grid lg:grid-cols-3 items-center gap-12">
+        <div className="relative z-10 max-w-[1400px] mx-auto px-6 w-full h-full">
+          
+          {/* === MOBILE LAYOUT (Stacked vertically to ensure perfect fit) === */}
+          <div className="flex flex-col lg:hidden justify-center items-center h-full w-full space-y-8 pt-10">
+            {/* Image strictly contained within 40% of viewport height */}
+            <motion.div style={{ opacity, y: imageY }} className="h-[40vh] w-full flex justify-center">
+              <img 
+                src={stage.product} 
+                alt={stage.title}
+                className="h-full w-auto object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" 
+              />
+            </motion.div>
             
-            {/* Left Side (Branding if side is 'left', otherwise empty spacer) */}
-            <div className={`flex justify-center ${stage.side === 'right' ? 'lg:order-last' : 'lg:order-first'}`}>
-              {stage.side === 'left' ? (
+            <motion.div style={{ opacity }} className="text-center space-y-4 px-2 w-full">
+              <span className="text-brand-gold text-[10px] font-black tracking-[0.4em] uppercase block">
+                {stage.subtitle}
+              </span>
+              <h2 className="text-4xl sm:text-5xl font-serif text-white uppercase leading-tight">
+                {stage.title.split(' ')[0]} <br/> 
+                <span className="italic text-brand-gold">{stage.title.split(' ')[1]}</span>
+              </h2>
+              <div className="w-12 h-[1px] bg-brand-gold mx-auto"></div>
+              <p className="text-gray-200 text-sm font-light leading-relaxed drop-shadow-md">
+                {stage.desc}
+              </p>
+              <button 
+                onClick={() => navigate('/about')} 
+                className="bg-brand-gold text-black px-8 py-4 text-[10px] font-black uppercase tracking-[0.3em] mt-4 hover:bg-white transition-all shadow-xl"
+              >
+                Learn More
+              </button>
+            </motion.div>
+          </div>
+
+          {/* === DESKTOP LAYOUT (3 columns side-by-side) === */}
+          <div className="hidden lg:grid lg:grid-cols-3 items-center h-full gap-12">
+            {/* Left Column */}
+            <div className="flex justify-center w-full">
+              {stage.side === 'left' && (
                 <motion.img 
-                  style={{ x: productX, opacity }} 
+                  style={{ y: imageY, opacity }} 
                   src={stage.product} 
-                  className="max-h-[600px] object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.9)]" 
+                  className="max-h-[600px] w-auto object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.9)]" 
                 />
-              ) : <div className="hidden lg:block"></div>}
+              )}
             </div>
 
-            {/* Middle Content */}
+            {/* Middle Column */}
             <motion.div style={{ opacity }} className="text-center space-y-8">
               <div className="space-y-4">
                 <span className="text-brand-gold text-[10px] font-black tracking-[0.5em] uppercase block">
                   {stage.subtitle}
                 </span>
-                <h2 className="text-5xl md:text-7xl font-serif text-white uppercase leading-tight">
+                <h2 className="text-5xl lg:text-6xl xl:text-7xl font-serif text-white uppercase leading-tight">
                   {stage.title.split(' ')[0]} <br/> 
                   <span className="italic text-brand-gold">{stage.title.split(' ')[1]}</span>
                 </h2>
               </div>
               <div className="w-16 h-[1px] bg-brand-gold mx-auto"></div>
-              <p className="text-gray-100 text-xl font-light leading-relaxed max-w-md mx-auto drop-shadow-lg">
+              <p className="text-gray-100 text-lg xl:text-xl font-light leading-relaxed max-w-md mx-auto drop-shadow-lg">
                 {stage.desc}
               </p>
               <button 
@@ -355,18 +386,18 @@ function ShowcaseStage({ stage, navigate }) {
               </button>
             </motion.div>
 
-            {/* Right Side (Branding if side is 'right', otherwise empty spacer) */}
-            <div className={`flex justify-center ${stage.side === 'left' ? 'lg:order-first' : 'lg:order-last'}`}>
-              {stage.side === 'right' ? (
+            {/* Right Column */}
+            <div className="flex justify-center w-full">
+              {stage.side === 'right' && (
                 <motion.img 
-                  style={{ x: productX, opacity }} 
+                  style={{ y: imageY, opacity }} 
                   src={stage.product} 
-                  className="max-h-[600px] object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.9)]" 
+                  className="max-h-[600px] w-auto object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.9)]" 
                 />
-              ) : <div className="hidden lg:block"></div>}
+              )}
             </div>
-
           </div>
+
         </div>
       </div>
     </div>
