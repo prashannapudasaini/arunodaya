@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { API_BASE_URL, getImageUrl } from '../config';
-import { MapPin, Mail, Phone, ArrowRight, ChevronRight } from 'lucide-react';
+import { MapPin, Mail, Phone, ArrowRight, ChevronRight, Camera, Instagram, Facebook, Twitter } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom'; 
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 
@@ -19,6 +19,11 @@ export default function Home() {
   const [allProducts, setAllProducts] = useState([]); 
   const [upcomingProducts, setUpcomingProducts] = useState([]);
 
+  // Featured products carousel state
+  const featuredScrollRef = useRef(null);
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
+  const autoScrollInterval = useRef(null);
+
   const slides = [
     { img: hero1, title: "PURITY DISTILLED", subtitle: "Nepal's Finest Spirits" },
     { img: hero2, title: "CRAFTED EXCELLENCE", subtitle: "Artisanal Small Batches" },
@@ -33,7 +38,7 @@ export default function Home() {
       title: "Iconic Balance",
       subtitle: "The Gold Standard",
       desc: "Mr. Black Extra Strong is more than a spirit; it is a legacy of Himalayan intensity refined into smooth perfection.",
-      side: "right" 
+      side: "right"
     },
     {
       id: "bare-shine",
@@ -55,12 +60,76 @@ export default function Home() {
     }
   ];
 
+  // Helper: scroll to a specific featured product index
+  const scrollToFeaturedIndex = (index) => {
+    if (!featuredScrollRef.current || !featuredProducts.length) return;
+    const container = featuredScrollRef.current;
+    const firstCard = container.children[0];
+    if (!firstCard) return;
+    const cardWidth = firstCard.offsetWidth;
+    const gap = parseFloat(getComputedStyle(container).gap) || 0;
+    const scrollAmount = index * (cardWidth + gap);
+    container.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+    setCurrentFeaturedIndex(index);
+  };
+
+  // Auto-scroll every 3 seconds
+  const startAutoScroll = () => {
+    if (autoScrollInterval.current) clearInterval(autoScrollInterval.current);
+    autoScrollInterval.current = setInterval(() => {
+      if (featuredProducts.length === 0) return;
+      let nextIndex = currentFeaturedIndex + 1;
+      if (nextIndex >= featuredProducts.length) nextIndex = 0;
+      scrollToFeaturedIndex(nextIndex);
+    }, 3000);
+  };
+
+  const stopAutoScroll = () => {
+    if (autoScrollInterval.current) {
+      clearInterval(autoScrollInterval.current);
+      autoScrollInterval.current = null;
+    }
+  };
+
+  const resetAutoScroll = () => {
+    stopAutoScroll();
+    startAutoScroll();
+  };
+
+  useEffect(() => {
+    const container = featuredScrollRef.current;
+    if (!container || !featuredProducts.length) return;
+
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const firstCard = container.children[0];
+      if (!firstCard) return;
+      const cardWidth = firstCard.offsetWidth;
+      const gap = parseFloat(getComputedStyle(container).gap) || 0;
+      const totalItemWidth = cardWidth + gap;
+      let newIndex = Math.round(scrollLeft / totalItemWidth);
+      newIndex = Math.min(newIndex, featuredProducts.length - 1);
+      if (newIndex !== currentFeaturedIndex) {
+        setCurrentFeaturedIndex(newIndex);
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [featuredProducts, currentFeaturedIndex]);
+
+  useEffect(() => {
+    if (featuredProducts.length > 0) {
+      startAutoScroll();
+    }
+    return () => stopAutoScroll();
+  }, [featuredProducts]);
+
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
 
-    // 1. FETCH FEATURED PRODUCTS
     axios.get(`${API_BASE_URL}/admin/products.php?featured=1`)
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : (res.data.data || []);
@@ -68,7 +137,6 @@ export default function Home() {
       })
       .catch(err => console.error("Error fetching featured:", err));
 
-    // 2. FETCH ALL PRODUCTS 
     axios.get(`${API_BASE_URL}/products.php`)
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : (res.data.data || []);
@@ -76,7 +144,6 @@ export default function Home() {
       })
       .catch(err => console.error("Error fetching all products:", err));
 
-    // 3. FETCH UPCOMING PRODUCTS
     axios.get(`${API_BASE_URL}/admin/products.php?type=upcoming`)
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : (res.data.data || []);
@@ -84,7 +151,10 @@ export default function Home() {
       })
       .catch(err => console.error("Error fetching upcoming:", err));
 
-    return () => clearInterval(slideInterval);
+    return () => {
+      clearInterval(slideInterval);
+      stopAutoScroll();
+    };
   }, [slides.length]);
 
   return (
@@ -95,7 +165,7 @@ export default function Home() {
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-      {/* ================= 1. HERO SECTION ================= */}
+      {/* ================= 1. HERO SECTION (ORIGINAL - NO LIQUID GLASS) ================= */}
       <section className="relative h-[100svh] w-full bg-black flex items-center justify-center overflow-hidden">
         {slides.map((slide, index) => (
           <motion.img 
@@ -169,7 +239,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= 4. FEATURED PRODUCTS ================= */}
+      {/* ================= 4. FEATURED PRODUCTS (with dots & auto-scroll) ================= */}
       <section className="relative flex flex-col justify-center py-12 lg:py-16 overflow-hidden lg:min-h-[100svh]">
         <div className="text-center px-6 mb-8 lg:mb-12">
           <span className="text-gray-400 text-[10px] font-black tracking-[0.4em] uppercase">Signature</span>
@@ -178,36 +248,65 @@ export default function Home() {
         </div>
 
         {featuredProducts.length > 0 ? (
-          <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar px-6 md:px-20 gap-4 md:gap-10 pb-6 lg:pb-10">
-            {featuredProducts.map((p) => (
-              <div 
-                key={p.id} 
-                onClick={() => navigate('/products', { state: { selectedProduct: p } })} 
-                className="group relative flex-shrink-0 snap-center w-[85vw] md:w-[45vw] lg:w-[28vw] h-[55vh] lg:h-[60vh] bg-white/[0.02] border border-white/5 hover:border-white/20 rounded-[2rem] p-6 lg:p-8 flex flex-col items-center justify-between cursor-pointer transition-all duration-500 overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+          <>
+            <div 
+              ref={featuredScrollRef}
+              className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar px-6 md:px-20 gap-4 md:gap-10 pb-6 lg:pb-10"
+              onMouseEnter={stopAutoScroll}
+              onMouseLeave={startAutoScroll}
+              onTouchStart={stopAutoScroll}
+              onTouchEnd={startAutoScroll}
+            >
+              {featuredProducts.map((p) => (
+                <div 
+                  key={p.id} 
+                  onClick={() => navigate('/products', { state: { selectedProduct: p } })} 
+                  className="group relative flex-shrink-0 snap-center w-[85vw] md:w-[45vw] lg:w-[28vw] h-[55vh] lg:h-[60vh] bg-white/[0.02] border border-white/5 hover:border-white/20 rounded-[2rem] p-6 lg:p-8 flex flex-col items-center justify-between cursor-pointer transition-all duration-500 overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
 
-                <div className="relative w-full h-[60%] lg:h-[65%] flex justify-center items-end mt-2 lg:mt-4">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 lg:w-40 lg:h-40 bg-brand-gold/0 blur-[60px] rounded-full group-hover:bg-brand-gold/20 transition-all duration-700"></div>
-                  <img 
-                    src={getImageUrl(p.image)} 
-                    alt={p.name} 
-                    className="h-full object-contain relative z-10 drop-shadow-[0_20px_30px_rgba(0,0,0,0.7)] group-hover:-translate-y-4 group-hover:scale-110 transition-all duration-700"
-                    onError={(e) => { e.target.src = "/assets/images/logo.png"; }}
-                  />
-                </div>
+                  <div className="relative w-full h-[60%] lg:h-[65%] flex justify-center items-end mt-2 lg:mt-4">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 lg:w-40 lg:h-40 bg-brand-gold/0 blur-[60px] rounded-full group-hover:bg-brand-gold/20 transition-all duration-700"></div>
+                    <img 
+                      src={getImageUrl(p.image)} 
+                      alt={p.name} 
+                      className="h-full object-contain relative z-10 drop-shadow-[0_20px_30px_rgba(0,0,0,0.7)] group-hover:-translate-y-4 group-hover:scale-110 transition-all duration-700"
+                      onError={(e) => { e.target.src = "/assets/images/logo.png"; }}
+                    />
+                  </div>
 
-                <div className="text-center relative z-10 w-full mt-4">
-                  <span className="text-gray-400 text-[10px] font-light tracking-[0.2em] uppercase block mb-2">{p.category}</span>
-                  <h3 className="text-xl md:text-3xl font-serif text-white group-hover:text-brand-gold transition-colors duration-300 mb-4 truncate w-full px-2">{p.name}</h3>
-                  <button className="px-6 py-3 w-full border border-white/20 text-white/70 text-[10px] font-medium uppercase tracking-[0.2em] group-hover:border-brand-gold group-hover:text-brand-gold transition-all duration-300 rounded-full">
-                    Discover
-                  </button>
+                  <div className="text-center relative z-10 w-full mt-4">
+                    <span className="text-gray-400 text-[10px] font-light tracking-[0.2em] uppercase block mb-2">{p.category}</span>
+                    <h3 className="text-xl md:text-3xl font-serif text-white group-hover:text-brand-gold transition-colors duration-300 mb-4 truncate w-full px-2">{p.name}</h3>
+                    <button className="px-6 py-3 w-full border border-white/20 text-white/70 text-[10px] font-medium uppercase tracking-[0.2em] group-hover:border-brand-gold group-hover:text-brand-gold transition-all duration-300 rounded-full">
+                      Discover
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-            <div className="flex-shrink-0 w-[5vw] md:w-[20vw]"></div>
-          </div>
+              ))}
+              <div className="flex-shrink-0 w-[5vw] md:w-[20vw]"></div>
+            </div>
+
+            {/* Three dots indicator */}
+            <div className="flex justify-center gap-3 mt-4">
+              {featuredProducts.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    stopAutoScroll();
+                    scrollToFeaturedIndex(idx);
+                    resetAutoScroll();
+                  }}
+                  className={`transition-all duration-300 rounded-full ${
+                    idx === currentFeaturedIndex
+                      ? 'w-8 h-2 bg-brand-gold'
+                      : 'w-2 h-2 bg-white/30 hover:bg-white/60'
+                  }`}
+                  aria-label={`Go to product ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </>
         ) : (
           <p className="text-center text-gray-500 tracking-widest uppercase font-light w-full">Inventory updating...</p>
         )}
@@ -281,14 +380,11 @@ export default function Home() {
                 id={`product-${p.id}`} 
                 className={`group flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-0 md:gap-8 lg:gap-24 scroll-mt-32`}
               >
-                
-                {/* MOBILE ONLY: Tasting Notes */}
                 <div className="md:hidden w-full text-center relative z-20 -mb-8">
                   <p className="text-brand-gold text-xs font-black uppercase tracking-widest mb-1">Tasting Notes</p>
                   <p className="text-white font-serif italic text-2xl">{p.flavor_notes || "Vanilla, Oak, Smooth Finish"}</p>
                 </div>
 
-                {/* Image Side */}
                 <div className="w-full md:w-1/2 flex justify-center relative z-10">
                   <div className="absolute inset-0 bg-brand-gold/10 blur-[80px] lg:blur-[120px] rounded-full animate-pulse group-hover:bg-brand-gold/20 transition-all duration-1000"></div>
                   <img 
@@ -299,7 +395,6 @@ export default function Home() {
                   />
                 </div>
                 
-                {/* Text Side */}
                 <div className="w-full md:w-1/2 flex flex-col items-center md:items-start space-y-3 lg:space-y-6 text-center md:text-left relative z-20 -mt-20 md:mt-0">
                   <span className="text-brand-gold text-[20px] md:text-2xl font-black tracking-[0.5em] uppercase block drop-shadow-lg">{p.category}</span>
                   <h2 className="text-5xl md:text-7xl font-serif text-white uppercase">{p.name}</h2>
@@ -308,13 +403,11 @@ export default function Home() {
                     {p.short_description || "A signature expression of artisanal perfection."}
                   </p>
                   
-                  {/* DESKTOP ONLY: Tasting Notes */}
                   <div className="hidden md:block pt-8 border-t border-white/10 w-full">
                     <p className="text-brand-gold text-sm font-black uppercase tracking-widest mb-2">Tasting Notes</p>
                     <p className="text-white font-serif italic text-2xl">{p.flavor_notes || "Vanilla, Oak, Smooth Finish"}</p>
                   </div>
                 </div>
-
               </div>
             );
           })}
@@ -393,69 +486,133 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ================= 9. EXPLORE & SOCIAL SECTION (NEW) ================= */}
+      <section 
+        className="relative py-16 lg:py-24 px-6 border-t border-white/5 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/images/hero_4.png')" }}
+      >
+        <div className="absolute inset-0 bg-black/60 z-0"></div>
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+            {/* Left Column: Explore */}
+            <div>
+              <h2 className="text-4xl md:text-5xl font-serif text-white uppercase tracking-wide mb-8">Explore</h2>
+              
+              <div className="space-y-6">
+                {/* Rectangle - What is Whiskey? */}
+                <div className="border border-white/20 p-4 hover:border-brand-gold transition-colors">
+                  <p className="text-white text-lg font-light tracking-wide">What is Whiskey?</p>
+                </div>
+                
+                {/* Rectangle - Cocktails & Recipes */}
+                <div className="border border-white/20 p-4 hover:border-brand-gold transition-colors">
+                  <p className="text-white text-lg font-light tracking-wide">Cocktails &amp; Recipes</p>
+                  <p className="text-gray-400 text-sm mt-1">Cocktail Recipes</p>
+                </div>
+                
+                {/* Three cocktail rectangles */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="border border-white/20 p-3 text-center hover:border-brand-gold transition-colors">
+                    <p className="text-white text-sm font-light">Bull-Fashioned</p>
+                  </div>
+                  <div className="border border-white/20 p-3 text-center hover:border-brand-gold transition-colors">
+                    <p className="text-white text-sm font-light">Bloody Wolf</p>
+                  </div>
+                  <div className="border border-white/20 p-3 text-center hover:border-brand-gold transition-colors">
+                    <p className="text-white text-sm font-light">Blues &amp; Tonic</p>
+                  </div>
+                </div>
+                
+                {/* Read more link */}
+                <div className="mt-8">
+                  <button className="text-brand-gold text-sm uppercase tracking-wider hover:text-white transition-colors inline-flex items-center gap-2">
+                    Read more <ArrowRight size={14} />
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Column: Let's Get Social */}
+            <div>
+              <h2 className="text-4xl md:text-5xl font-serif text-white uppercase tracking-wide mb-8">Let's Get Social</h2>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {/* 4 social media image placeholders */}
+                <div className="aspect-square bg-white/5 border border-white/10 flex flex-col items-center justify-center hover:bg-white/10 transition-colors">
+                  <Camera size={32} className="text-gray-400 mb-2" />
+                  <span className="text-xs text-gray-400">Instagram</span>
+                </div>
+                <div className="aspect-square bg-white/5 border border-white/10 flex flex-col items-center justify-center hover:bg-white/10 transition-colors">
+                  <Camera size={32} className="text-gray-400 mb-2" />
+                  <span className="text-xs text-gray-400">Facebook</span>
+                </div>
+                <div className="aspect-square bg-white/5 border border-white/10 flex flex-col items-center justify-center hover:bg-white/10 transition-colors">
+                  <Camera size={32} className="text-gray-400 mb-2" />
+                  <span className="text-xs text-gray-400">Twitter</span>
+                </div>
+                <div className="aspect-square bg-white/5 border border-white/10 flex flex-col items-center justify-center hover:bg-white/10 transition-colors">
+                  <Camera size={32} className="text-gray-400 mb-2" />
+                  <span className="text-xs text-gray-400">YouTube</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
 
-// ================= SHOWCASE STAGE =================
+// ================= SHOWCASE STAGE (UNIFIED GLASS CONTAINER, MINIMAL GAP, RESPONSIVE) =================
 function ShowcaseStage({ stage, navigate }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1, 1.1]);
-  const imageY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [40, 0, 0, -40]);
+  const containerY = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [60, 0, 0, -60]);
+
+  const isTextOnRight = stage.side === 'right';
 
   return (
-    <div ref={ref} className="h-[100svh] relative border-b border-white/5">
-      <div className="relative h-full w-full flex items-center overflow-hidden">
+    <div ref={ref} className="h-[100svh] relative flex items-center overflow-hidden border-b border-white/5">
+      <motion.div 
+        style={{ opacity, backgroundImage: `url(${stage.bg})` }} 
+        className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
+      />
+      
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
         <motion.div 
-          style={{ opacity, scale, backgroundImage: `url(${stage.bg})` }} 
-          className="absolute inset-0 bg-cover bg-center lg:bg-fixed z-0"
+          style={{ opacity, y: containerY }}
+          className="backdrop-blur-lg bg-black/30 border border-white/10 rounded-[2rem] shadow-2xl p-5 sm:p-6 md:p-8 lg:p-10"
         >
-          <div className="absolute inset-0 bg-black/70 lg:bg-black/50 backdrop-blur-[2px] lg:backdrop-blur-[1px]"></div>
-        </motion.div>
-
-        <div className="relative z-10 max-w-[1400px] mx-auto px-6 w-full h-full">
-          
-          {/* Mobile Stack */}
-          <div className="flex flex-col lg:hidden justify-center items-center h-full w-full space-y-6 pt-6">
-            <motion.div style={{ opacity, y: imageY }} className="h-[40vh] w-full flex justify-center">
-              <img src={stage.product} alt={stage.title} className="h-full w-auto object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]" />
-            </motion.div>
-            <motion.div style={{ opacity }} className="text-center space-y-4 px-2 w-full">
-              <span className="text-brand-gold text-[10px] font-black tracking-[0.4em] uppercase block">{stage.subtitle}</span>
-              <h2 className="text-4xl sm:text-5xl font-serif text-white uppercase leading-tight">
-                {stage.title.split(' ')[0]} <br/> <span className="italic text-brand-gold">{stage.title.split(' ')[1]}</span>
+          <div className={`flex flex-col lg:flex-row items-center ${isTextOnRight ? '' : 'lg:flex-row-reverse'} gap-4 sm:gap-5 md:gap-6 lg:gap-8`}>
+            <div className="flex justify-center items-center w-full lg:w-1/2">
+              <img 
+                src={stage.product} 
+                alt={stage.title} 
+                className="max-h-[35vh] sm:max-h-[40vh] md:max-h-[50vh] lg:max-h-[60vh] w-auto object-contain drop-shadow-xl" 
+              />
+            </div>
+            <div className="w-full lg:w-1/2 space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 text-center lg:text-left">
+              <span className="text-brand-gold text-[10px] sm:text-xs font-black tracking-[0.4em] uppercase block">
+                {stage.subtitle}
+              </span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif text-white uppercase leading-tight">
+                {stage.title}
               </h2>
-              <div className="w-12 h-[1px] bg-brand-gold mx-auto"></div>
-              <p className="text-gray-200 text-sm font-light leading-relaxed drop-shadow-md">{stage.desc}</p>
-              <button onClick={() => navigate('/about')} className="bg-brand-gold text-black px-8 py-3 text-[10px] font-black uppercase tracking-[0.3em] mt-2 hover:bg-white transition-all shadow-xl">Learn More</button>
-            </motion.div>
-          </div>
-
-          {/* Desktop Grid */}
-          <div className="hidden lg:grid lg:grid-cols-3 items-center h-full gap-12">
-            <div className="flex justify-center w-full">
-              {stage.side === 'left' && <motion.img style={{ y: imageY, opacity }} src={stage.product} className="max-h-[600px] w-auto object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.9)]" />}
-            </div>
-            <motion.div style={{ opacity }} className="text-center space-y-8">
-              <div className="space-y-4">
-                <span className="text-brand-gold text-[10px] font-black tracking-[0.5em] uppercase block">{stage.subtitle}</span>
-                <h2 className="text-5xl lg:text-6xl xl:text-7xl font-serif text-white uppercase leading-tight">
-                  {stage.title.split(' ')[0]} <br/> <span className="italic text-brand-gold">{stage.title.split(' ')[1]}</span>
-                </h2>
-              </div>
-              <div className="w-16 h-[1px] bg-brand-gold mx-auto"></div>
-              <p className="text-gray-100 text-lg xl:text-xl font-light leading-relaxed max-w-md mx-auto drop-shadow-lg">{stage.desc}</p>
-              <button onClick={() => navigate('/about')} className="bg-brand-gold text-black px-12 py-5 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white transition-all shadow-2xl">Learn More</button>
-            </motion.div>
-            <div className="flex justify-center w-full">
-              {stage.side === 'right' && <motion.img style={{ y: imageY, opacity }} src={stage.product} className="max-h-[600px] w-auto object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.9)]" />}
+              <div className="w-12 sm:w-16 h-[1px] bg-brand-gold mx-auto lg:mx-0"></div>
+              <p className="text-gray-200 text-sm sm:text-base md:text-lg font-light leading-relaxed">
+                {stage.desc}
+              </p>
+              <button 
+                onClick={() => navigate('/about')} 
+                className="bg-brand-gold text-black px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 text-[10px] sm:text-xs font-black uppercase tracking-widest hover:bg-white transition-all shadow-xl inline-block"
+              >
+                Learn More
+              </button>
             </div>
           </div>
-
-        </div>
+        </motion.div>
       </div>
     </div>
   );
