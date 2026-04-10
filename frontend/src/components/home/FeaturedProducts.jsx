@@ -33,7 +33,7 @@ export default function FeaturedProducts() {
 
   return (
     /* Updated gap to fit the new Glassmorphism Cards perfectly */
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 max-w-7xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-12 max-w-7xl mx-auto">
       {products.map(p => (
         <ProductCard key={p.id} product={p} isUpcoming={false} />
       ))}

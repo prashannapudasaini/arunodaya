@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom'; // 1. Added import for routing
+import { useLocation } from 'react-router-dom'; 
 import axios from 'axios';
 import API_BASE_URL from '../config';
 
 export default function Upcoming() {
   const [upcomingProducts, setUpcomingProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const location = useLocation(); // 2. Read the URL hash
+  const location = useLocation(); 
 
   useEffect(() => {
-    // Fetch products specifically marked as 'upcoming'
     axios.get(`${API_BASE_URL}/products.php?type=upcoming`)
       .then(res => {
-        // Correctly extracts data from the { success: true, data: [...] } wrapper
         const productArray = Array.isArray(res.data) ? res.data : (res.data.data || []);
         setUpcomingProducts(productArray);
         setLoading(false);
@@ -23,7 +21,6 @@ export default function Upcoming() {
       });
   }, []);
 
-  // 3. Auto-Scroll Logic
   useEffect(() => {
     if (!loading && location.hash) {
       const targetId = location.hash.replace('#', '');
@@ -66,39 +63,44 @@ export default function Upcoming() {
             </p>
           </div>
         ) : (
-          <div className="space-y-32">
+         <div className="space-y-12 md:space-y-32">
             {upcomingProducts.map((p, index) => {
               const isEven = index % 2 === 0;
               const imgPath = `${API_BASE_URL.replace('/api', '')}/${p.image}`;
 
               return (
-                // 4. Attached id={`product-${p.id}`} and scroll-mt-32
                 <div 
                   key={p.id} 
                   id={`product-${p.id}`}
-                  className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 lg:gap-24 scroll-mt-32`}
+                  /* Reduced mobile gap to 0 so we can manually control tight overlapping margins */
+                  className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-0 md:gap-12 lg:gap-24 scroll-mt-32`}
                 >
-                  {/* Image Side - Muted/Grayscale for Upcoming */}
-                  <div className="w-full md:w-1/2 flex justify-center">
+                  
+                  {/* MOBILE ONLY: Anticipated Profile - Pushed down to sit right above the cap */}
+                  <div className="md:hidden w-full text-center relative z-20 translate-y-8">
+                    <h4 className="text-brand-gold text-xs font-black uppercase tracking-widest mb-1 opacity-80">Anticipated Profile</h4>
+                    <p className="text-white font-serif italic text-xl">{p.flavor_notes || "Complex, Oaky, Unrivaled Smoothness"}</p>
+                  </div>
+
+                  {/* IMAGE SIDE */}
+                  <div className="w-full md:w-1/2 flex justify-center relative z-10 py-8 md:py-0">
                     <div className="relative group">
-                      {/* Soft ambient glow */}
                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-brand-gold/5 blur-[100px] rounded-full group-hover:bg-brand-gold/10 transition-all duration-1000"></div>
-                      
                       <img 
                         src={imgPath} 
                         alt={p.name} 
                         loading="lazy"
-                        className="relative z-10 max-h-[550px] object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" 
+                        className="relative z-10 max-h-[500px] md:max-h-[550px] object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" 
                         onLoad={(e) => e.target.classList.add('opacity-60')}
                         onError={(e) => { e.target.style.display = 'none'; }}
                       />
                     </div>
                   </div>
 
-                  {/* Text Side */}
-                  <div className="w-full md:w-1/2 space-y-8 text-center md:text-left">
+                  {/* TEXT SIDE - Pulled up on mobile to touch the shadow */}
+                  <div className="w-full md:w-1/2 flex flex-col items-center md:items-start space-y-4 md:space-y-6 text-center md:text-left relative z-20 -mt-12 md:mt-0">
                     <div className="space-y-2">
-                      <span className="text-brand-gold text-[10px] font-black tracking-[0.5em] uppercase block opacity-70">
+                      <span className="text-brand-gold text-xs md:text-sm font-black tracking-[0.5em] uppercase block opacity-70">
                         {p.category} // Experimental
                       </span>
                       <h2 className="text-4xl md:text-6xl font-serif text-white italic leading-tight">
@@ -108,24 +110,25 @@ export default function Upcoming() {
 
                     <div className="w-16 h-[1px] bg-brand-gold/40 mx-auto md:mx-0"></div>
 
-                    <p className="text-gray-400 text-lg font-light leading-relaxed max-w-xl">
+                    <p className="text-gray-400 text-lg font-light leading-relaxed max-w-xl px-4 md:px-0">
                       {p.short_description || "An upcoming masterpiece currently undergoing the final stages of maturation in our temperature-controlled cellars."}
                     </p>
                     
-                    <div className="pt-8 border-t border-white/10 space-y-4">
-                      <div>
-                        <h4 className="text-brand-gold text-[10px] font-black uppercase tracking-widest mb-2 opacity-60">Anticipated Profile</h4>
-                        <p className="text-white font-serif italic text-xl">
-                          {p.flavor_notes || "Complex, Oaky, Unrivaled Smoothness"}
-                        </p>
-                      </div>
-                      
-                      <div className="pt-4">
-                         <span className="inline-block px-8 py-3 border border-white/20 text-white/40 text-[10px] font-black uppercase tracking-widest rounded-full">
-                           Currently Maturing
-                         </span>
-                      </div>
+                    {/* DESKTOP ONLY: Anticipated Profile (Restored to original PC placement) */}
+                    <div className="hidden md:block pt-8 border-t border-white/10 w-full">
+                      <h4 className="text-brand-gold text-sm font-black uppercase tracking-widest mb-2 opacity-60">Anticipated Profile</h4>
+                      <p className="text-white font-serif italic text-xl">
+                        {p.flavor_notes || "Complex, Oaky, Unrivaled Smoothness"}
+                      </p>
                     </div>
+
+                    {/* Maturing Badge visible on both platforms */}
+                    <div className="pt-2 md:pt-4">
+                       <span className="inline-block px-8 py-3 border border-white/20 text-white/40 text-xs font-black uppercase tracking-widest rounded-full">
+                         Currently Maturing
+                       </span>
+                    </div>
+
                   </div>
                 </div>
               );

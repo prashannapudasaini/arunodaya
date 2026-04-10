@@ -48,17 +48,17 @@ export default function About() {
   };
 
   return (
-    <div className="pt-40 pb-24 px-6 lg:px-12 max-w-7xl mx-auto overflow-hidden">
+    <div className="pt-32 md:pt-40 pb-16 md:pb-24 px-6 lg:px-12 max-w-7xl mx-auto overflow-hidden">
       
       {/* HEADER */}
-      <motion.div initial="hidden" animate="visible" variants={fadeIn} className="text-center mb-24">
+      <motion.div initial="hidden" animate="visible" variants={fadeIn} className="text-center mb-16 md:mb-24">
         <span className="text-brand-gold text-xs font-black tracking-[0.4em] uppercase mb-4 block">Our Heritage</span>
         <h1 className="text-5xl md:text-7xl font-serif uppercase tracking-tight">The <span className="text-brand-gold italic">Legacy</span></h1>
-        <div className="w-16 h-0.5 bg-brand-gold mx-auto mt-8"></div>
+        <div className="w-16 h-0.5 bg-brand-gold mx-auto mt-6 md:mt-8"></div>
       </motion.div>
 
       {/* COMPANY OVERVIEW & VISION */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="grid lg:grid-cols-2 gap-16 mb-24 items-center">
+      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="grid lg:grid-cols-2 gap-10 md:gap-16 mb-16 md:mb-24 items-center">
         <div>
           <h2 className="text-3xl font-serif mb-6 text-brand-gold">Company Overview</h2>
           <p className="text-gray-300 text-lg leading-relaxed mb-6 font-light">
@@ -71,19 +71,19 @@ export default function About() {
             </p>
           </div>
         </div>
-        <div className="liquid-glass h-full min-h-[400px] flex items-center justify-center relative overflow-hidden group">
+        <div className="liquid-glass h-full min-h-[300px] md:min-h-[400px] flex items-center justify-center relative overflow-hidden group mt-6 lg:mt-0">
           <div className="absolute inset-0 bg-brand-gold/10 group-hover:bg-brand-gold/20 transition-colors duration-500"></div>
-          <h3 className="text-2xl text-brand-gold font-serif italic border border-brand-gold p-6 rounded-xl z-10 backdrop-blur-sm">Excellence in Distillation</h3>
+          <h3 className="text-2xl text-brand-gold font-serif italic border border-brand-gold p-6 rounded-xl z-10 backdrop-blur-sm text-center">Excellence in Distillation</h3>
         </div>
       </motion.div>
 
       {/* MISSION & GOALS */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="mb-32">
-        <div className="text-center mb-16">
+      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="mb-16 md:mb-32">
+        <div className="text-center mb-10 md:mb-16">
           <h2 className="text-3xl font-serif text-brand-gold">Strategic Roadmap</h2>
           <p className="text-gray-400 mt-4 font-light">Our mission and goals for the future</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           
           <motion.div variants={fadeIn} className="liquid-glass p-8 hover:border-brand-gold/50 transition-colors">
             <h3 className="text-xl font-bold mb-6 text-brand-gold uppercase tracking-widest text-sm">Mission</h3>
@@ -117,10 +117,10 @@ export default function About() {
       </motion.div>
 
       {/* BUSINESS MODEL */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="mb-32 liquid-glass p-10 md:p-16 relative overflow-hidden">
+      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="mb-16 md:mb-32 liquid-glass p-8 md:p-16 relative overflow-hidden">
          <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/5 rounded-full blur-3xl"></div>
-         <h2 className="text-3xl font-serif text-brand-gold mb-10 text-center">Business Model</h2>
-         <div className="grid md:grid-cols-3 gap-10 relative z-10">
+         <h2 className="text-3xl font-serif text-brand-gold mb-8 md:mb-10 text-center">Business Model</h2>
+         <div className="grid md:grid-cols-3 gap-8 md:gap-10 relative z-10">
             <div>
               <h4 className="text-brand-gold font-bold uppercase tracking-widest text-xs mb-3">Value Chain</h4>
               <p className="text-gray-300 font-light text-sm leading-relaxed">Utilizing a Grain-to-Glass approach to ensure total control over raw material quality. Multi-column vacuum distillation achieves high-purity yields while optimizing energy.</p>
@@ -137,7 +137,7 @@ export default function About() {
       </motion.div>
 
       {/* REVENUE TABLE */}
-      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="liquid-glass p-8 lg:p-12 mb-32">
+      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="liquid-glass p-6 md:p-12 mb-16 md:mb-32">
         <h2 className="text-3xl font-serif text-brand-gold mb-2">Financial Trajectory</h2>
         <p className="text-gray-400 font-light mb-8 text-sm tracking-widest uppercase">Projected Annual Sales (10-Year Outlook)</p>
         <div className="overflow-x-auto">
@@ -175,13 +175,13 @@ export default function About() {
 
       {/* BOARD OF DIRECTORS */}
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="mb-10">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 md:mb-16">
           <h2 className="text-3xl font-serif text-brand-gold">Board of Directors</h2>
           <p className="text-gray-400 mt-4 font-light">The visionaries guiding our journey</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
           {team.map((member, index) => (
-            <motion.div key={index} variants={fadeIn} className="liquid-glass p-8 text-center hover:border-brand-gold/50 transition-colors group">
+            <motion.div key={index} variants={fadeIn} className="liquid-glass p-6 md:p-8 text-center hover:border-brand-gold/50 transition-colors group">
               <h3 className="text-lg font-bold mb-2 group-hover:text-brand-gold transition-colors">{member.name}</h3>
               <p className="text-brand-gold text-xs uppercase tracking-widest">{member.role}</p>
             </motion.div>
