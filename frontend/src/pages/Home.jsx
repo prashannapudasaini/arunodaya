@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { API_BASE_URL, getImageUrl } from '../config';
-import { MapPin, Mail, Phone, ArrowRight, ChevronRight, Camera, Instagram, Facebook, Twitter } from 'lucide-react';
+import { MapPin, Mail, Phone, ArrowRight, ChevronRight, Facebook, Instagram, Youtube } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom'; 
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 
@@ -9,6 +9,28 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import hero1 from '../assets/images/hero_1.jpg';
 import hero2 from '../assets/images/hero_2.png';
 import hero3 from '../assets/images/hero_3.png';
+
+// Explore Section Liquor Images
+const exploreLiquors = [
+  {
+  id: 1,
+  name: "Premium Whisky",
+  description: "Crafted through advanced blended distillation, delivering a smooth, full-bodied character with refined depth and lasting finish.",
+  image: "/images/back1.png",
+},
+{
+  id: 2,
+  name: "Ultra-Pure Vodka",
+  description: "Distilled with precision for exceptional purity, offering a clean, crisp profile ideal for both classic and modern cocktails.",
+  image: "/images/vodka.png",
+},
+{
+  id: 3,
+  name: "Classic Reserve Rum",
+  description: "A rich and balanced spirit with subtle sweetness, developed for bold flavor and a warm, smooth drinking experience.",
+  image: "/images/back4.png"
+},
+];
 
 export default function Home() {
   const navigate = useNavigate(); 
@@ -56,6 +78,33 @@ export default function Home() {
       title: "Premium Apple",
       subtitle: "Himalayan Harvest",
       desc: "Our Makhan series brings the crisp sweetness of Himalayan apples together with a bold, smooth distillation profile.",
+      side: "right"
+    },
+    {
+      id: "enjoy",
+      bg: "/images/back2.png",         
+      product: "/images/enjoy.png", 
+      title: "Enjoy",
+      subtitle: "Celebration Series",
+      desc: "A vibrantly crafted spirit designed for celebration. Enjoy delivers a perfectly balanced, smooth profile that elevates every toast and shared moment.",
+      side: "right"
+    },
+    {
+      id: "basanti",
+      bg: "/images/back3.png",         
+      product: "/images/basanti.png", 
+      title: "Basanti",
+      subtitle: "Citrus Reserve",
+      desc: "A citrus-forward whisky featuring vibrant notes of fresh lemon. Basanti offers a refreshing twist on tradition, blending smooth maturation with a zesty, invigorating finish.",
+      side: "left"
+    },
+    {
+      id: "vodka",
+      bg: "/images/back4.png",         
+      product: "/images/vodka.png",   
+      title: "Premium 555 Vodka",
+      subtitle: "Ultra-Pure Series",
+      desc: "Distilled for ultimate purity, Premium 555 Vodka offers an exceptionally clean and crisp tasting experience, perfect for sipping chilled or mixing in classic cocktails.",
       side: "right"
     }
   ];
@@ -155,7 +204,7 @@ export default function Home() {
       clearInterval(slideInterval);
       stopAutoScroll();
     };
-  }, [slides.length]);
+  }, []);
 
   return (
     <main className="bg-[#050505] text-white min-h-screen">
@@ -165,7 +214,7 @@ export default function Home() {
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-      {/* ================= 1. HERO SECTION (ORIGINAL - NO LIQUID GLASS) ================= */}
+      {/* ================= 1. HERO SECTION ================= */}
       <section className="relative h-[100svh] w-full bg-black flex items-center justify-center overflow-hidden">
         {slides.map((slide, index) => (
           <motion.img 
@@ -239,7 +288,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= 4. FEATURED PRODUCTS (with dots & auto-scroll) ================= */}
+      {/* ================= 4. FEATURED PRODUCTS ================= */}
       <section className="relative flex flex-col justify-center py-12 lg:py-16 overflow-hidden lg:min-h-[100svh]">
         <div className="text-center px-6 mb-8 lg:mb-12">
           <span className="text-gray-400 text-[10px] font-black tracking-[0.4em] uppercase">Signature</span>
@@ -287,7 +336,6 @@ export default function Home() {
               <div className="flex-shrink-0 w-[5vw] md:w-[20vw]"></div>
             </div>
 
-            {/* Three dots indicator */}
             <div className="flex justify-center gap-3 mt-4">
               {featuredProducts.map((_, idx) => (
                 <button
@@ -361,12 +409,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= 6. COMPLETE COLLECTION ================= */}
-      <section className="py-12 lg:py-16 px-6 overflow-hidden bg-black border-t border-white/5">
-        <div className="text-center mb-10 lg:mb-16">
-          <span className="text-gray-400 text-[10px] font-black tracking-[0.4em] uppercase">The Cellars</span>
-          <h2 className="text-3xl md:text-5xl font-serif mt-4 text-white uppercase tracking-wide">Complete Collection</h2>
+      {/* ================= 6. COMPLETE COLLECTION (MATCHING PRODUCT PAGE STYLE) ================= */}
+      <section className="py-12 lg:py-20 px-6 overflow-hidden bg-black border-t border-white/5">
+        <div className="text-center mb-16 lg:mb-20">
+          <span className="text-brand-gold text-[10px] font-black tracking-[0.4em] uppercase">The Cellars</span>
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif mt-4 text-white uppercase tracking-wide">Complete Collection</h2>
           <div className="w-12 h-[1px] bg-brand-gold mx-auto mt-6"></div>
+          <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto mt-6 font-light">
+            Discover our full range of premium spirits, each crafted with Himalayan precision
+          </p>
         </div>
 
         <div className="max-w-7xl mx-auto space-y-10 lg:space-y-32">
@@ -378,34 +429,51 @@ export default function Home() {
               <div 
                 key={p.id} 
                 id={`product-${p.id}`} 
-                className={`group flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-0 md:gap-8 lg:gap-24 scroll-mt-32`}
+                className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-0 md:gap-12 lg:gap-24 animate-in fade-in slide-in-from-bottom-10 duration-1000 scroll-mt-32`}
               >
-                <div className="md:hidden w-full text-center relative z-20 -mb-8">
-                  <p className="text-brand-gold text-xs font-black uppercase tracking-widest mb-1">Tasting Notes</p>
-                  <p className="text-white font-serif italic text-2xl">{p.flavor_notes || "Vanilla, Oak, Smooth Finish"}</p>
-                </div>
-
+                {/* IMAGE SIDE */}
                 <div className="w-full md:w-1/2 flex justify-center relative z-10">
-                  <div className="absolute inset-0 bg-brand-gold/10 blur-[80px] lg:blur-[120px] rounded-full animate-pulse group-hover:bg-brand-gold/20 transition-all duration-1000"></div>
+                  <div className="absolute inset-0 bg-brand-gold/10 blur-[120px] rounded-full"></div>
                   <img 
                     src={imgPath} 
                     loading="lazy" 
-                    className="relative z-10 max-h-[380px] lg:max-h-[550px] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all duration-700 opacity-90 group-hover:-translate-y-6 group-hover:scale-110" 
+                    className="relative z-10 max-h-[380px] md:max-h-[550px] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)] transition-all duration-1000 opacity-0 scale-95" 
+                    onLoad={(e) => { e.target.style.opacity = 1; e.target.style.transform = 'scale(1)'; }}
                     onError={(e) => { e.target.src = "/assets/images/logo.png"; }}
                   />
                 </div>
-                
-                <div className="w-full md:w-1/2 flex flex-col items-center md:items-start space-y-3 lg:space-y-6 text-center md:text-left relative z-20 -mt-20 md:mt-0">
-                  <span className="text-brand-gold text-[20px] md:text-2xl font-black tracking-[0.5em] uppercase block drop-shadow-lg">{p.category}</span>
+
+                {/* TEXT SIDE */}
+                <div className="w-full md:w-1/2 flex flex-col items-center md:items-start space-y-4 lg:space-y-6 text-center md:text-left relative z-20 -mt-20 md:mt-0">
+                  <span className="text-brand-gold text-[20px] md:text-2xl font-black tracking-[0.5em] uppercase block drop-shadow-lg">
+                    {p.category || "PREMIUM SPIRIT"}
+                  </span>
                   <h2 className="text-5xl md:text-7xl font-serif text-white uppercase">{p.name}</h2>
                   <div className="w-16 lg:w-20 h-[1px] bg-brand-gold/40 mx-auto md:mx-0"></div>
                   <p className="text-gray-400 text-base md:text-lg font-light leading-relaxed max-w-xl px-6 md:px-0">
                     {p.short_description || "A signature expression of artisanal perfection."}
                   </p>
                   
+                  {/* DESKTOP ONLY: Tasting Notes */}
                   <div className="hidden md:block pt-8 border-t border-white/10 w-full">
                     <p className="text-brand-gold text-sm font-black uppercase tracking-widest mb-2">Tasting Notes</p>
                     <p className="text-white font-serif italic text-2xl">{p.flavor_notes || "Vanilla, Oak, Smooth Finish"}</p>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4 pt-4 w-full justify-center md:justify-start">
+                    <button 
+                      onClick={() => navigate('/products', { state: { selectedProduct: p } })}
+                      className="px-8 py-3 bg-brand-gold text-black font-bold tracking-widest text-[11px] uppercase overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-brand-gold/20"
+                    >
+                      View Details
+                    </button>
+                    <button 
+                      onClick={() => navigate('/contact')}
+                      className="px-8 py-3 border border-white/20 hover:border-brand-gold text-white/80 hover:text-brand-gold transition-all duration-300 tracking-widest text-[11px] uppercase font-medium"
+                    >
+                      Inquire Now
+                    </button>
                   </div>
                 </div>
               </div>
@@ -487,75 +555,82 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= 9. EXPLORE & SOCIAL SECTION (NEW) ================= */}
-      <section 
-        className="relative py-16 lg:py-24 px-6 border-t border-white/5 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/images/hero_4.png')" }}
-      >
-        <div className="absolute inset-0 bg-black/60 z-0"></div>
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-            {/* Left Column: Explore */}
-            <div>
-              <h2 className="text-4xl md:text-5xl font-serif text-white uppercase tracking-wide mb-8">Explore</h2>
-              
-              <div className="space-y-6">
-                {/* Rectangle - What is Whiskey? */}
-                <div className="border border-white/20 p-4 hover:border-brand-gold transition-colors">
-                  <p className="text-white text-lg font-light tracking-wide">What is Whiskey?</p>
+      {/* ================= 9. EXPLORE & LET'S GET SOCIAL SECTION ================= */}
+      <section className="py-16 lg:py-24 px-6 bg-black border-t border-white/5">
+        <div className="max-w-7xl mx-auto">
+          {/* Explore Section */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif text-white uppercase tracking-wide mb-4">Explore</h2>
+            <div className="w-16 h-[1px] bg-brand-gold mx-auto"></div>
+          </div>
+          
+          {/* 3 Liquors with images and descriptions */}
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-12 mb-20">
+            {exploreLiquors.map((liquor) => (
+              <div key={liquor.id} className="group cursor-pointer">
+                <div className="overflow-hidden rounded-lg mb-4 bg-white/5">
+                  <img 
+                    src={liquor.image} 
+                    alt={liquor.name}
+                    className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                 </div>
-                
-                {/* Rectangle - Cocktails & Recipes */}
-                <div className="border border-white/20 p-4 hover:border-brand-gold transition-colors">
-                  <p className="text-white text-lg font-light tracking-wide">Cocktails &amp; Recipes</p>
-                  <p className="text-gray-400 text-sm mt-1">Cocktail Recipes</p>
-                </div>
-                
-                {/* Three cocktail rectangles */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="border border-white/20 p-3 text-center hover:border-brand-gold transition-colors">
-                    <p className="text-white text-sm font-light">Bull-Fashioned</p>
-                  </div>
-                  <div className="border border-white/20 p-3 text-center hover:border-brand-gold transition-colors">
-                    <p className="text-white text-sm font-light">Bloody Wolf</p>
-                  </div>
-                  <div className="border border-white/20 p-3 text-center hover:border-brand-gold transition-colors">
-                    <p className="text-white text-sm font-light">Blues &amp; Tonic</p>
-                  </div>
-                </div>
-                
-                {/* Read more link */}
-                <div className="mt-8">
-                  <button className="text-brand-gold text-sm uppercase tracking-wider hover:text-white transition-colors inline-flex items-center gap-2">
-                    Read more <ArrowRight size={14} />
-                  </button>
-                </div>
+                <h3 className="text-xl font-serif text-white text-center mb-2 group-hover:text-brand-gold transition-colors">
+                  {liquor.name}
+                </h3>
+                <p className="text-gray-300 text-sm text-center leading-relaxed">
+                  {liquor.description}
+                </p>
               </div>
+            ))}
+          </div>
+          
+          {/* Let's Get Social Section */}
+          <div className="text-center">
+            <h2 className="text-4xl md:text-5xl font-serif text-white uppercase tracking-wide mb-8">Let's Get Social</h2>
+            
+            {/* Social Icons with better visibility */}
+            <div className="flex justify-center gap-8 mb-6">
+              <a 
+                href="https://www.facebook.com/search/top?q=arunodaya%20distillery" 
+                className="text-gray-300 hover:text-brand-gold transition-all duration-300 transform hover:scale-110"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Facebook size={32} className="drop-shadow-md" />
+              </a>
+              <a 
+                href="#" 
+                className="text-gray-300 hover:text-brand-gold transition-all duration-300 transform hover:scale-110"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Instagram size={32} className="drop-shadow-md" />
+              </a>
+              <a 
+                href="#" 
+                className="text-gray-300 hover:text-brand-gold transition-all duration-300 transform hover:scale-110"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Youtube size={32} className="drop-shadow-md" />
+              </a>
             </div>
             
-            {/* Right Column: Let's Get Social */}
-            <div>
-              <h2 className="text-4xl md:text-5xl font-serif text-white uppercase tracking-wide mb-8">Let's Get Social</h2>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {/* 4 social media image placeholders */}
-                <div className="aspect-square bg-white/5 border border-white/10 flex flex-col items-center justify-center hover:bg-white/10 transition-colors">
-                  <Camera size={32} className="text-gray-400 mb-2" />
-                  <span className="text-xs text-gray-400">Instagram</span>
-                </div>
-                <div className="aspect-square bg-white/5 border border-white/10 flex flex-col items-center justify-center hover:bg-white/10 transition-colors">
-                  <Camera size={32} className="text-gray-400 mb-2" />
-                  <span className="text-xs text-gray-400">Facebook</span>
-                </div>
-                <div className="aspect-square bg-white/5 border border-white/10 flex flex-col items-center justify-center hover:bg-white/10 transition-colors">
-                  <Camera size={32} className="text-gray-400 mb-2" />
-                  <span className="text-xs text-gray-400">Twitter</span>
-                </div>
-                <div className="aspect-square bg-white/5 border border-white/10 flex flex-col items-center justify-center hover:bg-white/10 transition-colors">
-                  <Camera size={32} className="text-gray-400 mb-2" />
-                  <span className="text-xs text-gray-400">YouTube</span>
-                </div>
-              </div>
+            <button className="text-gray-300 text-sm uppercase tracking-wider hover:text-brand-gold transition-all duration-300 inline-flex items-center gap-2 group">
+              FOLLOW US ON INSTAGRAM 
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+          
+          {/* Footer Navigation Links */}
+          <div className="mt-16 pt-8 border-t border-white/10">
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm">
+              <Link to="/" className="text-gray-400 hover:text-brand-gold transition-colors duration-300">HOME</Link>
+              <Link to="/products" className="text-gray-400 hover:text-brand-gold transition-colors duration-300">PRODUCTS</Link>
+              <Link to="/upcoming" className="text-gray-400 hover:text-brand-gold transition-colors duration-300">UPCOMING</Link>
+              <Link to="/about" className="text-gray-400 hover:text-brand-gold transition-colors duration-300">ABOUT US</Link>
+              <Link to="/contact" className="text-gray-400 hover:text-brand-gold transition-colors duration-300">CONTACT</Link>
             </div>
           </div>
         </div>
@@ -564,7 +639,7 @@ export default function Home() {
   );
 }
 
-// ================= SHOWCASE STAGE (UNIFIED GLASS CONTAINER, MINIMAL GAP, RESPONSIVE) =================
+// ================= THE UPDATED SHOWCASE STAGE =================
 function ShowcaseStage({ stage, navigate }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
@@ -574,45 +649,65 @@ function ShowcaseStage({ stage, navigate }) {
   const isTextOnRight = stage.side === 'right';
 
   return (
-    <div ref={ref} className="h-[100svh] relative flex items-center overflow-hidden border-b border-white/5">
+    <div ref={ref} className="h-[100svh] relative flex items-center overflow-hidden border-b border-gray-200">
       <motion.div 
         style={{ opacity, backgroundImage: `url(${stage.bg})` }} 
         className="absolute inset-0 bg-cover bg-center bg-fixed z-0"
       />
       
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
-        <motion.div 
-          style={{ opacity, y: containerY }}
-          className="backdrop-blur-lg bg-black/30 border border-white/10 rounded-[2rem] shadow-2xl p-5 sm:p-6 md:p-8 lg:p-10"
-        >
-          <div className={`flex flex-col lg:flex-row items-center ${isTextOnRight ? '' : 'lg:flex-row-reverse'} gap-4 sm:gap-5 md:gap-6 lg:gap-8`}>
-            <div className="flex justify-center items-center w-full lg:w-1/2">
-              <img 
-                src={stage.product} 
-                alt={stage.title} 
-                className="max-h-[35vh] sm:max-h-[40vh] md:max-h-[50vh] lg:max-h-[60vh] w-auto object-contain drop-shadow-xl" 
-              />
+      {/* Light overlay to brighten the background image slightly */}
+      <div className="absolute inset-0 bg-white/20 z-0"></div>
+      
+      {/* Container with alignment based on side */}
+      <div className={`relative z-10 w-full flex ${stage.side === 'right' ? 'justify-end' : 'justify-start'} px-4 sm:px-6 lg:px-8`}>
+        <div className="w-full sm:w-4/5 md:w-3/5 lg:w-3/5 xl:w-2/5">
+          <motion.div 
+            style={{ opacity, y: containerY }}
+            // Light frosted glass (bg-white/70) so dark text is readable
+            className={`backdrop-blur-xl bg-white/70 border border-white/50 rounded-[2rem] shadow-2xl p-5 sm:p-6 md:p-8 lg:p-10 ${
+              stage.side === 'right' ? 'mr-0 sm:mr-0.5 ml-auto' : 'ml-0 sm:ml-0.5 mr-auto'
+            }`}
+          >
+            <div className={`flex flex-col lg:flex-row items-center ${isTextOnRight ? '' : 'lg:flex-row-reverse'} gap-6 sm:gap-8 md:gap-10`}>
+              
+              {/* Image Section */}
+              <div className="flex justify-center items-center w-full lg:w-2/5">
+                <img 
+                  src={stage.product} 
+                  alt={stage.title} 
+                  // Dramatically increased bottle scale and hover size
+                  className="max-h-[55vh] md:max-h-[65vh] lg:max-h-[75vh] xl:max-h-[85vh] w-auto object-contain drop-shadow-2xl transition-transform duration-500 scale-[1.35] hover:scale-[1.6]" 
+                />
+              </div>
+              
+              {/* Content Section */}
+              <div className="w-full lg:w-3/5 space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 text-center lg:text-left mt-8 lg:mt-0">
+                <span className="text-amber-600 text-[10px] sm:text-xs font-black tracking-[0.4em] uppercase block">
+                  {stage.subtitle}
+                </span>
+                
+                {/* Explicitly dark text (text-gray-900) */}
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif text-gray-900 uppercase leading-tight">
+                  {stage.title}
+                </h2>
+                
+                <div className="w-12 sm:w-16 h-[1px] bg-amber-500 mx-auto lg:mx-0"></div>
+                
+                {/* Explicitly dark text (text-gray-800) */}
+                <p className="text-gray-800 text-sm sm:text-base md:text-lg font-light leading-relaxed">
+                  {stage.desc}
+                </p>
+                
+                <button 
+                  onClick={() => navigate('/product/' + stage.id)} 
+                  className="bg-amber-500 text-black px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 text-[10px] sm:text-xs font-black uppercase tracking-widest hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-xl inline-block transform hover:scale-105 active:scale-95"
+                >
+                  Visit
+                </button>
+              </div>
             </div>
-            <div className="w-full lg:w-1/2 space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6 text-center lg:text-left">
-              <span className="text-brand-gold text-[10px] sm:text-xs font-black tracking-[0.4em] uppercase block">
-                {stage.subtitle}
-              </span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif text-white uppercase leading-tight">
-                {stage.title}
-              </h2>
-              <div className="w-12 sm:w-16 h-[1px] bg-brand-gold mx-auto lg:mx-0"></div>
-              <p className="text-gray-200 text-sm sm:text-base md:text-lg font-light leading-relaxed">
-                {stage.desc}
-              </p>
-              <button 
-                onClick={() => navigate('/about')} 
-                className="bg-brand-gold text-black px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 text-[10px] sm:text-xs font-black uppercase tracking-widest hover:bg-white transition-all shadow-xl inline-block"
-              >
-                Learn More
-              </button>
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

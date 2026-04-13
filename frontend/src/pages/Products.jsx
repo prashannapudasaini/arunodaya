@@ -43,11 +43,6 @@ export default function Products() {
               className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-0 md:gap-12 lg:gap-24 animate-in fade-in slide-in-from-bottom-10 duration-1000 scroll-mt-32`}
             >
               
-              {/* MOBILE ONLY: Tasting Notes (Positioned just above the bottle cap) */}
-              <div className="md:hidden w-full text-center relative z-20 -mb-8">
-                <p className="text-brand-gold text-xs font-black uppercase tracking-widest mb-1">Tasting Notes</p>
-                <p className="text-white font-serif italic text-2xl">{p.flavor_notes || "Vanilla, Oak, Smooth Finish"}</p>
-              </div>
 
               {/* IMAGE SIDE */}
               <div className="w-full md:w-1/2 flex justify-center relative z-10">
@@ -62,7 +57,7 @@ export default function Products() {
 
               {/* TEXT SIDE (Bottom text overlapping the reflection on mobile) */}
               <div className="w-full md:w-1/2 flex flex-col items-center md:items-start space-y-4 lg:space-y-6 text-center md:text-left relative z-20 -mt-20 md:mt-0">
-                <span className="text-brand-gold text-[20px] md:text-2xl font-black tracking-[0.5em] uppercase block drop-shadow-lg">{p.category}</span>
+                <span className="text-brand-gold text-[20px] md:text-2xl font-black tracking-[0.5em] uppercase block drop-shadow-lg"> <p className="text-white font-serif italic text-2xl">{p.flavor_notes || "Vanilla, Oak, Smooth Finish"}</p></span>
                 <h2 className="text-5xl md:text-7xl font-serif text-white uppercase">{p.name}</h2>
                 <div className="w-16 lg:w-20 h-[1px] bg-brand-gold/40 mx-auto md:mx-0"></div>
                 <p className="text-gray-400 text-base md:text-lg font-light leading-relaxed max-w-xl px-6 md:px-0">
