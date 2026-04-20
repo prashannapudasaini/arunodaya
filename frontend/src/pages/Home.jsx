@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { API_BASE_URL, getImageUrl } from '../config';
-import { MapPin, Mail, Phone, ArrowRight, ChevronRight, Facebook, Instagram, Youtube } from 'lucide-react';
+import { MapPin, Mail, Phone, ArrowRight, Calendar, ChevronRight, Facebook, Instagram, Youtube } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom'; 
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 
@@ -20,15 +20,33 @@ const exploreLiquors = [
 },
 {
   id: 2,
-  name: "Ultra-Pure Vodka",
-  description: "Distilled with precision for exceptional purity, offering a clean, crisp profile ideal for both classic and modern cocktails.",
-  image: "/images/vodka.png",
+  name: "Botanical Mist Gin",
+  description: "An aromatic blend of juniper, fresh herbs, and floral notes. Light, crisp, and refreshing with a sophisticated herbal complexity.",
+  image: "/images/cocktail.png",
 },
 {
   id: 3,
   name: "Classic Reserve Rum",
   description: "A rich and balanced spirit with subtle sweetness, developed for bold flavor and a warm, smooth drinking experience.",
   image: "/images/back4.png"
+},
+{
+  id: 4,
+  name: "Velvet Spice Rum",
+  description: "Rich and warming with notes of caramel, vanilla, and exotic spices. Smooth on entry, with a lingering warmth that defines a premium sipping experience.",
+  image: "/images/cocktail1.png"
+},
+{
+  id: 5,
+  name: "Midnight Premium Blend",
+  description: "Dark, intense, and smooth with hints of cocoa and dried fruits. A luxurious finish designed for late-night indulgence.",
+  image: "/images/cocktail2.png"
+},
+{
+  id: 6,
+  name: "Tropical Fusion RTD",
+  description: "A lively mix of tropical fruits with a subtle sparkle, delivering a refreshing, ready-to-enjoy experience tailored for modern lifestyles.",
+  image: "/images/back3.png"
 },
 ];
 
@@ -60,7 +78,7 @@ export default function Home() {
       title: "Iconic Balance",
       subtitle: "The Gold Standard",
       desc: "Mr. Black Extra Strong is more than a spirit; it is a legacy of Himalayan intensity refined into smooth perfection.",
-      side: "right"
+      side: "right" 
     },
     {
       id: "bare-shine",
@@ -277,7 +295,7 @@ export default function Home() {
           </button>
         </div>
       </section>
-     
+      
       {/* ================= 3. ALL PRODUCTS BANNER ================= */}
       <section className="w-full border-t border-white/5 bg-black py-12 lg:py-16 px-6">
         <div className="max-w-4xl mx-auto text-center relative z-10">
@@ -309,7 +327,8 @@ export default function Home() {
               {featuredProducts.map((p) => (
                 <div 
                   key={p.id} 
-                  onClick={() => navigate('/products', { state: { selectedProduct: p } })} 
+                  /* Routing to specific product ID */
+                  onClick={() => navigate(`/products#product-${p.id}`)} 
                   className="group relative flex-shrink-0 snap-center w-[85vw] md:w-[45vw] lg:w-[28vw] h-[55vh] lg:h-[60vh] bg-white/[0.02] border border-white/5 hover:border-white/20 rounded-[2rem] p-6 lg:p-8 flex flex-col items-center justify-between cursor-pointer transition-all duration-500 overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-t from-brand-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
@@ -374,7 +393,8 @@ export default function Home() {
             return (
               <div 
                 key={p.id} 
-                onClick={() => navigate('/upcoming', { state: { selectedProduct: p } })} 
+                /* Routing to specific upcoming product ID */
+                onClick={() => navigate(`/upcoming#product-${p.id}`)} 
                 className={`group cursor-pointer relative h-[100svh] w-full flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} border-t border-white/5 overflow-hidden`}
               >
                 <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px] pointer-events-none"></div>
@@ -445,9 +465,6 @@ export default function Home() {
 
                 {/* TEXT SIDE */}
                 <div className="w-full md:w-1/2 flex flex-col items-center md:items-start space-y-4 lg:space-y-6 text-center md:text-left relative z-20 -mt-20 md:mt-0">
-                  <span className="text-brand-gold text-[20px] md:text-2xl font-black tracking-[0.5em] uppercase block drop-shadow-lg">
-                    {p.category || "PREMIUM SPIRIT"}
-                  </span>
                   <h2 className="text-5xl md:text-7xl font-serif text-white uppercase">{p.name}</h2>
                   <div className="w-16 lg:w-20 h-[1px] bg-brand-gold/40 mx-auto md:mx-0"></div>
                   <p className="text-gray-400 text-base md:text-lg font-light leading-relaxed max-w-xl px-6 md:px-0">
@@ -463,7 +480,8 @@ export default function Home() {
                   {/* Action Buttons */}
                   <div className="flex flex-col sm:flex-row gap-4 pt-4 w-full justify-center md:justify-start">
                     <button 
-                      onClick={() => navigate('/products', { state: { selectedProduct: p } })}
+                      /* Routing to specific product ID */
+                      onClick={() => navigate(`/products#product-${p.id}`)}
                       className="px-8 py-3 bg-brand-gold text-black font-bold tracking-widest text-[11px] uppercase overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-brand-gold/20"
                     >
                       View Details
@@ -671,12 +689,12 @@ function ShowcaseStage({ stage, navigate }) {
             <div className={`flex flex-col lg:flex-row items-center ${isTextOnRight ? '' : 'lg:flex-row-reverse'} gap-6 sm:gap-8 md:gap-10`}>
               
               {/* Image Section */}
-              <div className="flex justify-center items-center w-full lg:w-2/5">
+              <div className="flex justify-center items-center w-full lg:w-2/5 mt-4 md:mt-0 mb-6 md:mb-0">
                 <img 
                   src={stage.product} 
                   alt={stage.title} 
-                  // Dramatically increased bottle scale and hover size
-                  className="max-h-[55vh] md:max-h-[65vh] lg:max-h-[75vh] xl:max-h-[85vh] w-auto object-contain drop-shadow-2xl transition-transform duration-500 scale-[1.35] hover:scale-[1.6]" 
+                  // FIX: Reduced max-h and scale for mobile, kept dramatic size for md and lg screens
+                  className="max-h-[35vh] sm:max-h-[45vh] md:max-h-[65vh] lg:max-h-[75vh] xl:max-h-[85vh] w-auto object-contain drop-shadow-2xl transition-transform duration-500 scale-110 hover:scale-125 md:scale-[1.35] md:hover:scale-[1.6]" 
                 />
               </div>
               
@@ -698,12 +716,6 @@ function ShowcaseStage({ stage, navigate }) {
                   {stage.desc}
                 </p>
                 
-                <button 
-                  onClick={() => navigate('/product/' + stage.id)} 
-                  className="bg-amber-500 text-black px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 text-[10px] sm:text-xs font-black uppercase tracking-widest hover:bg-gray-900 hover:text-white transition-all duration-300 shadow-xl inline-block transform hover:scale-105 active:scale-95"
-                >
-                  Visit
-                </button>
               </div>
             </div>
           </motion.div>
