@@ -97,80 +97,114 @@ export default function Home() {
         }
       `}</style>
 
-      {/* ================= 1. HERO SECTION ================= */}
-      <section className="relative h-[100svh] w-full bg-black flex items-center justify-center overflow-hidden">
-        {slides.map((slide, index) => (
-          <motion.img 
-            key={index} 
-            src={slide.img} 
-            alt={`Slide ${index + 1}`} 
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ 
-              opacity: index === currentSlide ? 0.5 : 0,
-              scale: index === currentSlide ? 1 : 1.1,
-              zIndex: index === currentSlide ? 1 : 0
-            }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="absolute inset-0 w-full h-full object-cover" 
-            onError={(e) => { e.target.style.display = 'none'; }} 
-          />
-        ))}
+     {/* ================= 1. HERO SECTION ================= */}
+<section className="relative h-[100svh] w-full bg-black flex items-center justify-center overflow-hidden">
 
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 z-[1]"></div>
+  {slides.map((slide, index) => (
+    <motion.img
+      key={index}
+      src={slide.img}
+      alt={`Slide ${index + 1}`}
+      initial={{ opacity: 0, scale: 1.05 }}
+      animate={{
+        opacity: index === currentSlide ? 1 : 0,
+        scale: index === currentSlide ? 1 : 1.05,
+        zIndex: index === currentSlide ? 1 : 0
+      }}
+      transition={{ duration: 1.2, ease: "easeOut" }}
+      className="absolute inset-0 w-full h-full object-cover"
+      onError={(e) => { e.target.style.display = 'none'; }}
+    />
+  ))}
 
-        <div className="relative z-10 text-center px-4 w-full max-w-6xl mx-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0, y: 20, filter: "blur(5px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -20, filter: "blur(5px)" }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <p className="text-brand-gold text-xs md:text-sm tracking-[0.4em] uppercase mb-6 animate-pulse">
-                {slides[currentSlide].subtitle}
-              </p>
-              <h1 className="text-5xl md:text-8xl font-serif uppercase tracking-widest text-white drop-shadow-2xl mb-8 lg:mb-12">
-                {slides[currentSlide].title}
-              </h1>
-              <div className="flex flex-col sm:flex-row gap-4 lg:gap-6 justify-center items-center">
-                <Link to="/products" className="group relative px-8 lg:px-10 py-3 lg:py-4 bg-brand-gold text-black font-bold tracking-widest text-[10px] uppercase overflow-hidden">
-                  <span className="relative z-10 flex items-center gap-2">Explore Collection <ChevronRight size={16} /></span>
-                  <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                </Link>
-                <Link to="/about" className="px-8 lg:px-10 py-3 lg:py-4 border border-white/20 hover:border-brand-gold transition-colors tracking-widest text-[10px] uppercase text-white">
-                  Our Story
-                </Link>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+  {/* CLEAN SOLID OVERLAY (no gradient haze) */}
+  <div className="absolute inset-0 bg-black/60 z-[1]" />
+
+  {/* Content */}
+  <div className="relative z-10 text-center px-4 w-full max-w-6xl mx-auto">
+
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={currentSlide}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+
+        <p className="text-brand-gold text-xs md:text-sm tracking-[0.4em] uppercase mb-6">
+  {slides[currentSlide].subtitle}
+</p>
+
+<h1 className="text-5xl md:text-8xl font-serif uppercase tracking-widest text-white mb-8 lg:mb-12">
+  {slides[currentSlide].title}
+</h1>
+
+        <div className="flex flex-col sm:flex-row gap-4 lg:gap-6 justify-center items-center">
+
+          <Link
+            to="/products"
+            className="group relative px-8 lg:px-10 py-3 lg:py-4 bg-brand-gold text-black font-bold tracking-widest text-[10px] uppercase overflow-hidden"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              Explore Collection <ChevronRight size={16} />
+            </span>
+            <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+          </Link>
+
+          <Link
+            to="/about"
+            className="px-8 lg:px-10 py-3 lg:py-4 border border-white hover:border-brand-gold transition-colors tracking-widest text-[10px] uppercase text-white"
+          >
+            Our Story
+          </Link>
+
         </div>
-      </section>
 
-      {/* ================= 2. OUR STORY ================= */}
-      <section className="pt-20 lg:pt-28 pb-16 lg:pb-20 px-4 bg-[#0a0a0a] border-t border-white/5 relative overflow-hidden leaf-pattern">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] bg-brand-gold/5 blur-[120px] rounded-full pointer-events-none"></div>
-        
-        <div className="absolute left-0 bottom-0 opacity-20 pointer-events-none">
+      </motion.div>
+    </AnimatePresence>
+
+  </div>
+</section>
+
+   {/* ================= 2. OUR STORY ================= */}
+      <section className="pt-20 lg:pt-28 pb-16 lg:pb-20 px-4 bg-white dark:bg-[#0a0a0a] border-t border-black/10 dark:border-white/5 relative overflow-hidden leaf-pattern transition-colors duration-500">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] bg-brand-gold/10 dark:bg-brand-gold/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+        <div className="absolute left-0 bottom-0 opacity-10 dark:opacity-20 pointer-events-none">
           <Leaf size={120} className="text-emerald-500/30" />
         </div>
-        <div className="absolute right-0 top-20 opacity-20 pointer-events-none">
+
+        <div className="absolute right-0 top-20 opacity-10 dark:opacity-20 pointer-events-none">
           <Flower2 size={100} className="text-rose-500/30" />
         </div>
-        
+
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <span className="text-brand-gold text-[10px] font-black tracking-[0.4em] uppercase block mb-4">The Legacy</span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-white uppercase tracking-wide mb-6">Our Story</h2>
+          <span className="text-brand-gold text-[10px] font-black tracking-[0.4em] uppercase block mb-4">
+            The Legacy
+          </span>
+          
+          {/* FIXED: Changed to text-gray-900 dark:text-white */}
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif uppercase tracking-wide mb-6 text-gray-900 dark:text-white transition-colors">
+            Our Story
+          </h2>
+          
           <div className="w-16 h-[1px] bg-brand-gold mx-auto mb-8"></div>
-          <p className="text-gray-300 text-base md:text-lg lg:text-xl font-light leading-relaxed md:leading-loose drop-shadow-md">
-            At Arunodaya Distillery, we are committed to crafting exceptional, artisanal spirits that capture the true essence of Nepal. By seamlessly blending traditional, small-batch distillation methods with modern quality standards, we maintain a deep respect for local craftsmanship. From our meticulous grain-to-glass approach to our world-class portfolio of whisky, vodka, rum, and dry gin, every bottle we produce is a testament to our vision of becoming Nepal's most trusted and globally recognized distillery.Arunodaya distillery limited (ADL) is a manufacturing
-company focused on producing world-class whisky, vodka,rum, dry gin.
+          
+          {/* FIXED: Changed to text-gray-700 dark:text-gray-300 */}
+          <p className="text-gray-700 dark:text-gray-300 text-base md:text-lg lg:text-xl font-light leading-relaxed md:leading-loose transition-colors">
+            At Arunodaya Distillery, we are committed to crafting exceptional, artisanal spirits that capture the true essence of Nepal. By seamlessly blending traditional, small-batch distillation methods with modern quality standards, we maintain a deep respect for local craftsmanship. From our meticulous grain-to-glass approach to our world-class portfolio of whisky, vodka, rum, and dry gin, every bottle we produce is a testament to our vision of becoming Nepal's most trusted and globally recognized distillery. Arunodaya Distillery Limited (ADL) is a manufacturing company focused on producing world-class whisky, vodka, rum, and dry gin.
           </p>
-          <button onClick={() => navigate('/about')} className="mt-10 px-10 py-4 border border-white/20 text-white/80 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-brand-gold hover:border-brand-gold hover:text-black transition-all duration-300 shadow-xl">
+          
+          <button 
+            onClick={() => navigate('/about')} 
+            className="mt-10 px-10 py-4 border bg-brand-gold border-brand-gold text-black dark:bg-transparent dark:border-white/20 dark:text-white/80 text-[10px] font-black uppercase tracking-[0.3em] hover:bg-brand-gold hover:border-brand-gold hover:text-black transition-all duration-300 shadow-lg dark:shadow-xl"
+          >
             Read Full History
           </button>
         </div>
       </section>
+
 
     {/* ================= 3. PURE & NATURAL - CRAFTED BY NATURE SECTION 1 ================= */}
 <section className="py-20 lg:py-28 px-4 bg-gradient-to-b from-[#0a0a0a] to-[#050505] border-t border-white/5">
