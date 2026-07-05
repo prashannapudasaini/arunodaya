@@ -65,34 +65,55 @@ body, #root {
 /* 🚨 THE PROTECTOR: FORCE NAVBAR & HERO TO STAY BLACK FOREVER 🚨 */
 :root:not(.dark-mode) nav,
 :root:not(.dark-mode) section.h-screen,
+:root:not(.dark-mode) section.h-\[100svh\],
 :root:not(.dark-mode) .bg-\[\#0a0a0a\]\/90,
 :root:not(.dark-mode) .bg-\[\#0a0a0a\]\/95 {
   background-color: #050505 !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* B. FIX TEXT COLORS */
-:root:not(.dark-mode) .text-white,
-:root:not(.dark-mode) .text-gray-300 {
+/* B. FIX TEXT COLORS & STRIP ALL OPACITY */
+/* 1. Hunt down and override Tailwind's dark mode text classes */
+:root:not(.dark-mode) [class*="dark:text-white"],
+:root:not(.dark-mode) [class*="dark:text-gray-100"],
+:root:not(.dark-mode) [class*="dark:text-gray-200"],
+:root:not(.dark-mode) [class*="dark:text-gray-300"],
+:root:not(.dark-mode) [class*="dark:text-gray-400"] {
   color: var(--text-color) !important;
+  opacity: 1 !important;
 }
 
-/* 🚨 PROTECT NAVBAR & HERO TEXT (Keep them White) 🚨 */
+/* 2. Force standard light grays to be readable and fully opaque */
+:root:not(.dark-mode) .text-gray-400,
+:root:not(.dark-mode) .text-gray-500,
+:root:not(.dark-mode) .text-gray-600 {
+  color: var(--muted-text) !important;
+  opacity: 1 !important;
+}
+
+/* 3. Bulletproof Catch-All (Safety Net) */
+:root:not(.dark-mode) section:not(.h-\[100svh\]) h1,
+:root:not(.dark-mode) section:not(.h-\[100svh\]) h2,
+:root:not(.dark-mode) section:not(.h-\[100svh\]) h3 {
+  color: var(--text-color) !important;
+  opacity: 1 !important; 
+}
+
+/* 🚨 PROTECT NAVBAR, HERO, & BOTANICAL TEXT (Keep them White) 🚨 */
 :root:not(.dark-mode) nav .text-white,
 :root:not(.dark-mode) nav .text-gray-300,
 :root:not(.dark-mode) nav a,
-:root:not(.dark-mode) section.h-screen .text-white,
-:root:not(.dark-mode) section.h-screen h1,
-:root:not(.dark-mode) section.h-screen p,
-:root:not(.dark-mode) section.h-screen span {
+:root:not(.dark-mode) section.h-\[100svh\] .text-white,
+:root:not(.dark-mode) section.h-\[100svh\] h1,
+:root:not(.dark-mode) section.h-\[100svh\] p,
+:root:not(.dark-mode) section.h-\[100svh\] span,
+:root:not(.dark-mode) [style*="background-image"] .text-white,
+:root:not(.dark-mode) [style*="background-image"] p.text-gray-300 {
   color: #ffffff !important;
+  opacity: 1 !important;
 }
 
-/* Fix Muted Text and Footer Readability */
-:root:not(.dark-mode) .text-gray-400,
-:root:not(.dark-mode) .text-gray-500 {
-  color: var(--muted-text) !important;
-}
+/* C. FIX REVENUE TABLE, BADGES & FOOTER */
 :root:not(.dark-mode) footer a,
 :root:not(.dark-mode) footer p,
 :root:not(.dark-mode) footer span,
@@ -102,9 +123,8 @@ body, #root {
 :root:not(.dark-mode) footer h4,
 :root:not(.dark-mode) footer svg {
   color: var(--text-color) !important;
+  opacity: 1 !important;
 }
-
-/* C. FIX REVENUE TABLE & STATUS BADGES */
 :root:not(.dark-mode) tr:hover,
 :root:not(.dark-mode) tr:hover td,
 :root:not(.dark-mode) tr:hover p,
@@ -121,16 +141,18 @@ body, #root {
     color: #1e40af !important;
 }
 
-/* D. CONTACT PAGE FORM FIXES */
+/* D. CONTACT PAGE FORM FIXES (100% Opaque & Visible) */
 :root:not(.dark-mode) input,
 :root:not(.dark-mode) textarea {
   background-color: var(--input-bg) !important;
   color: var(--text-color) !important;
-  border: 1px solid rgba(0,0,0,0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  opacity: 1 !important;
 }
 :root:not(.dark-mode) input::placeholder,
 :root:not(.dark-mode) textarea::placeholder {
-  color: #9ca3af !important;
+  color: #6b7280 !important;
+  opacity: 1 !important;
 }
 
 /* Fix Gold Button Hover in Light Mode */
