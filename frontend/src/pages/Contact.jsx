@@ -42,7 +42,7 @@ export default function Contact() {
           <span className="text-brand-gold text-xs font-black tracking-[0.4em] uppercase mb-4 block">Get in Touch</span>
           <h1 className="text-5xl md:text-6xl font-serif mb-6 leading-tight">Let's<br/><span className="text-brand-gold italic">Connect</span></h1>
           <div className="w-12 h-0.5 bg-brand-gold mb-6 md:mb-8"></div>
-          <p className="text-gray-300 text-lg leading-relaxed mb-8 md:mb-12 font-light">Partner with Nepal's fastest-growing premium distillery.</p>
+          <p className="text-base md:text-lg font-light">Partner with Nepal's fastest-growing premium distillery.</p>
           <div className="space-y-4 md:space-y-6">
             <div className="liquid-glass p-5 md:p-6 bg-white/5 border-none flex items-start gap-4">
               <MapPin className="text-brand-gold" size={24} />

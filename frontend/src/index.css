@@ -50,16 +50,23 @@ body, #root {
    3. MAGIC AUTO-CONVERSION (FINAL PATCH)
    ========================================================= */
 
-/* A. ANNIHILATE STUBBORN DARK BACKGROUNDS (EXCEPT NAV & HERO) */
+/* A. ANNIHILATE STUBBORN DARK BACKGROUNDS & GRADIENTS */
 :root:not(.dark-mode) main,
 :root:not(.dark-mode) footer,
-:root:not(.dark-mode) .bg-black,
-:root:not(.dark-mode) .bg-dark-bg,
-:root:not(.dark-mode) [class*="bg-[#0"], 
-:root:not(.dark-mode) [class*="bg-[#1"],
-:root:not(.dark-mode) [class*="bg-gray-8"],
-:root:not(.dark-mode) [class*="bg-gray-9"] {
+:root:not(.dark-mode) section:not(.h-\[100svh\]),
+:root:not(.dark-mode) [class*="bg-black"],
+:root:not(.dark-mode) [class*="dark:bg-"] {
   background-color: var(--bg-color) !important;
+}
+
+/* Kill Tailwind's dark gradients on standard sections */
+:root:not(.dark-mode) section:not(.h-\[100svh\]) {
+  background-image: none !important;
+}
+
+/* Restore the Leaf Pattern background specifically */
+:root:not(.dark-mode) .leaf-pattern {
+  background-image: radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 1px, transparent 1px) !important;
 }
 
 /* 🚨 THE PROTECTOR: FORCE NAVBAR & HERO TO STAY BLACK FOREVER 🚨 */
@@ -69,32 +76,33 @@ body, #root {
 :root:not(.dark-mode) .bg-\[\#0a0a0a\]\/90,
 :root:not(.dark-mode) .bg-\[\#0a0a0a\]\/95 {
   background-color: #050505 !important;
+  background-image: none !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* B. FIX TEXT COLORS & STRIP ALL OPACITY */
-/* 1. Hunt down and override Tailwind's dark mode text classes */
-:root:not(.dark-mode) [class*="dark:text-white"],
-:root:not(.dark-mode) [class*="dark:text-gray-100"],
-:root:not(.dark-mode) [class*="dark:text-gray-200"],
-:root:not(.dark-mode) [class*="dark:text-gray-300"],
-:root:not(.dark-mode) [class*="dark:text-gray-400"] {
+/* Catch all standard light/white text classes globally, ignoring whether they have a dark: prefix */
+:root:not(.dark-mode) [class*="text-white"],
+:root:not(.dark-mode) [class*="text-gray-100"],
+:root:not(.dark-mode) [class*="text-gray-200"],
+:root:not(.dark-mode) [class*="text-gray-300"],
+:root:not(.dark-mode) [class*="text-gray-400"] {
   color: var(--text-color) !important;
   opacity: 1 !important;
 }
 
-/* 2. Force standard light grays to be readable and fully opaque */
-:root:not(.dark-mode) .text-gray-400,
-:root:not(.dark-mode) .text-gray-500,
-:root:not(.dark-mode) .text-gray-600 {
+:root:not(.dark-mode) [class*="text-gray-500"],
+:root:not(.dark-mode) [class*="text-gray-600"] {
   color: var(--muted-text) !important;
   opacity: 1 !important;
 }
 
-/* 3. Bulletproof Catch-All (Safety Net) */
 :root:not(.dark-mode) section:not(.h-\[100svh\]) h1,
 :root:not(.dark-mode) section:not(.h-\[100svh\]) h2,
-:root:not(.dark-mode) section:not(.h-\[100svh\]) h3 {
+:root:not(.dark-mode) section:not(.h-\[100svh\]) h3,
+:root:not(.dark-mode) section:not(.h-\[100svh\]) p,
+:root:not(.dark-mode) section:not(.h-\[100svh\]) span,
+:root:not(.dark-mode) section:not(.h-\[100svh\]) svg {
   color: var(--text-color) !important;
   opacity: 1 !important; 
 }
@@ -107,8 +115,12 @@ body, #root {
 :root:not(.dark-mode) section.h-\[100svh\] h1,
 :root:not(.dark-mode) section.h-\[100svh\] p,
 :root:not(.dark-mode) section.h-\[100svh\] span,
-:root:not(.dark-mode) [style*="background-image"] .text-white,
-:root:not(.dark-mode) [style*="background-image"] p.text-gray-300 {
+:root:not(.dark-mode) section.h-\[100svh\] svg,
+:root:not(.dark-mode) [class*="min-h-\[220px\]"] h3,
+:root:not(.dark-mode) [class*="min-h-\[220px\]"] p,
+:root:not(.dark-mode) [class*="min-h-\[220px\]"] svg,
+:root:not(.dark-mode) [class*="min-h-\[220px\]"] .text-white,
+:root:not(.dark-mode) [class*="min-h-\[220px\]"] .text-gray-300 {
   color: #ffffff !important;
   opacity: 1 !important;
 }
@@ -125,13 +137,12 @@ body, #root {
   color: var(--text-color) !important;
   opacity: 1 !important;
 }
-:root:not(.dark-mode) tr:hover,
-:root:not(.dark-mode) tr:hover td,
-:root:not(.dark-mode) tr:hover p,
-:root:not(.dark-mode) tr:hover span {
-    background-color: rgba(0, 0, 0, 0.05) !important;
-    color: var(--text-color) !important;
+
+/* Subtle table row hover for light mode */
+:root:not(.dark-mode) tr:hover {
+    background-color: rgba(0, 0, 0, 0.03) !important;
 }
+
 :root:not(.dark-mode) .bg-yellow-400\/20 {
     background-color: rgba(212, 175, 55, 0.2) !important;
     color: #856404 !important;
@@ -141,7 +152,7 @@ body, #root {
     color: #1e40af !important;
 }
 
-/* D. CONTACT PAGE FORM FIXES (100% Opaque & Visible) */
+/* D. CONTACT PAGE FORM & BUTTON FIXES */
 :root:not(.dark-mode) input,
 :root:not(.dark-mode) textarea {
   background-color: var(--input-bg) !important;
@@ -155,8 +166,9 @@ body, #root {
   opacity: 1 !important;
 }
 
-/* Fix Gold Button Hover in Light Mode */
-:root:not(.dark-mode) [class*="hover:bg-white"]:hover {
+/* Fix Gold Button Hover in Light Mode (Strictly targeting links and buttons to protect table rows) */
+:root:not(.dark-mode) a[class*="hover:bg-white"]:hover,
+:root:not(.dark-mode) button[class*="hover:bg-white"]:hover {
   background-color: #111827 !important;
   color: #ffffff !important;
 }
@@ -173,7 +185,17 @@ body, #root {
 }
 
 /* =========================================================
-   4. PREMIUM GLASS CLASSES 
+   4. FIX DARK MODE CARDS (Prevent White Bleed-Through)
+   ========================================================= */
+/* Removes the solid bg-white color underneath transparent dark gradients in dark mode */
+.dark-mode section .rounded-3xl.bg-white,
+.dark-mode section .rounded-2xl.bg-white,
+.dark-mode section .rounded-lg.bg-white {
+  background-color: transparent !important;
+}
+
+/* =========================================================
+   5. PREMIUM GLASS CLASSES 
    ========================================================= */
 .liquid-glass {
   background: var(--glass-bg);
@@ -193,7 +215,7 @@ body, #root {
 }
 
 /* =========================================================
-   5. IMAGE SIZE CONSTRAINTS
+   6. IMAGE SIZE CONSTRAINTS
    ========================================================= */
 .product-img-box {
   height: 280px;
@@ -215,7 +237,7 @@ body, #root {
 }
 
 /* =========================================================
-   6. CUSTOM CSS ANIMATIONS
+   7. CUSTOM CSS ANIMATIONS
    ========================================================= */
 @keyframes float {
   0% { transform: translateY(0px); }
@@ -234,7 +256,7 @@ body, #root {
 }
 
 /* =========================================================
-   7. SCROLLBAR & SELECTION
+   8. SCROLLBAR & SELECTION
    ========================================================= */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { 
