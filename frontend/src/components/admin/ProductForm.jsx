@@ -19,16 +19,33 @@ export default function ProductForm({ onComplete }) {
     e.preventDefault();
     setLoading(true);
     const data = new FormData();
+    
     Object.keys(formData).forEach(key => {
       if (key === 'is_featured') data.append(key, formData[key] ? '1' : '0');
       else data.append(key, formData[key]);
     });
 
     try {
-      await axios.post(`${API_BASE_URL}/products.php`, data);
+      // ✅ INJECTED AUTH HEADER HERE
+      // Note: We do NOT set 'Content-Type' manually. Axios and the browser 
+      // handle the multipart/form-data boundary automatically for file uploads.
+      await axios.post(`${API_BASE_URL}/admin/products.php`, data, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        }
+      });
       onComplete();
-    } catch (err) { alert("Upload failed"); }
-    setLoading(false);
+    } catch (err) { 
+      console.error("Upload error:", err.response?.data || err);
+      // Give a more specific error message if it's an auth issue
+      if (err.response?.status === 401) {
+        alert("Upload failed: Unauthorized. Please log in again.");
+      } else {
+        alert("Upload failed. Check the console for details."); 
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

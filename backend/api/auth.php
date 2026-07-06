@@ -1,6 +1,6 @@
 <?php
 // 1. MUST BE THE VERY FIRST THING: Handle CORS Preflight
-header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Origin: *"); // Updated to * for consistency
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Content-Type: application/json; charset=UTF-8");
@@ -33,8 +33,14 @@ try {
 
     // 6. Verify Password
     if ($user && password_verify($data->password, $user['password'])) {
+        
         // Generate token
         $token = base64_encode(random_bytes(32));
+        
+        // NEW: Save the token to the database for this specific user
+        $updateQuery = "UPDATE users SET token = ? WHERE id = ?";
+        $updateStmt = $conn->prepare($updateQuery);
+        $updateStmt->execute([$token, $user['id']]);
         
         http_response_code(200);
         echo json_encode([

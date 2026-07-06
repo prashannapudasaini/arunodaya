@@ -8,7 +8,10 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import ScrollParticles from './components/ScrollParticles'; // <--- Added Particles
+import ScrollParticles from './components/ScrollParticles'; 
+
+// Import the ProtectedRoute wrapper
+import ProtectedRoute from './components/ProtectedRoute'; 
 
 function App() {
   return (
@@ -21,13 +24,23 @@ function App() {
         <Navbar />
         <main className="pt-20">
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
             <Route path="/upcoming" element={<Upcoming />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            
+            {/* Protected Admin Route */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </main>
         <Footer />

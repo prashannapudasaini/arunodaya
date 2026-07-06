@@ -15,12 +15,24 @@ export default function Dashboard() {
     is_featured: false, existing_image: ''
   });
 
+  // Helper function to get the auth header
+  const getAuthHeader = () => ({
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+    }
+  });
+
   const fetchData = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/admin/products.php`);
-      setProducts(res.data.data || []);
+      // ✅ INJECTED AUTH HEADER HERE
+      const res = await axios.get(`${API_BASE_URL}/admin/products.php`, getAuthHeader());
+      setProducts(res.data.data || res.data || []); // Adjusted fallback depending on exact PHP output
     } catch (err) { 
-      console.error("Fetch Error:", err); 
+      console.error("Fetch Error:", err);
+      // Optional: If unauthorized, redirect to login
+      if (err.response?.status === 401) {
+        window.location.href = '/login';
+      }
     }
   };
 
@@ -55,28 +67,21 @@ export default function Dashboard() {
     data.append('flavor_notes', formData.flavor_notes);
     data.append('is_featured', formData.is_featured ? '1' : '0');
 
-    // ✅ PROPER FIX: Separate File vs. String logic
+    // Separate File vs. String logic
     // If new image selected → send as FILE
     if (formData.image) {
       data.append('image', formData.image);
-      console.log("Uploading file:", formData.image.name);
     }
 
     // If editing and no new image → send existing string separately
     if (editingId && !formData.image && formData.existing_image) {
       data.append('existing_image', formData.existing_image);
-      console.log("Using existing:", formData.existing_image);
-    }
-
-    // 🔍 DEBUG TOOL: Log exactly what is being sent to the server
-    console.log("=== SENDING FORM DATA ===");
-    for (let pair of data.entries()) {
-      console.log(pair[0] + ':', pair[1]);
     }
 
     try {
-      // ✅ No manual headers, let Axios handle the boundary
-      const response = await axios.post(`${API_BASE_URL}/admin/products.php`, data);
+      // ✅ INJECTED AUTH HEADER HERE 
+      // Note: Axios automatically sets the multipart/form-data boundary, so we only pass the Auth header
+      const response = await axios.post(`${API_BASE_URL}/admin/products.php`, data, getAuthHeader());
       console.log("Server Response:", response.data);
       
       setShowForm(false);
@@ -94,8 +99,14 @@ export default function Dashboard() {
 
   const deleteProd = async (id) => {
     if (window.confirm("Delete spirit?")) {
-      await axios.delete(`${API_BASE_URL}/admin/products.php?id=${id}`);
-      fetchData();
+      try {
+        // ✅ INJECTED AUTH HEADER HERE
+        await axios.delete(`${API_BASE_URL}/admin/products.php?id=${id}`, getAuthHeader());
+        fetchData();
+      } catch (err) {
+        console.error("Delete Error:", err);
+        alert(`Failed to delete. Status: ${err.response?.status}.`);
+      }
     }
   };
 

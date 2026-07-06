@@ -11,12 +11,13 @@ $password = 'admin123';
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    // Make sure the table exists
+    // UPDATED: Added a 'token' column to store the active session
     $conn->exec("CREATE TABLE IF NOT EXISTS `users` (
       `id` int(11) NOT NULL AUTO_INCREMENT,
       `username` varchar(50) NOT NULL,
       `password` varchar(255) NOT NULL,
       `role` varchar(20) DEFAULT 'admin',
+      `token` varchar(255) DEFAULT NULL,
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
